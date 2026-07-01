@@ -389,6 +389,20 @@ const TITLES={
 document.getElementById('mesBadge').textContent=mesActual+' '+anio;
 document.getElementById('fechaHoy').textContent=now.toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'});
 
+/* AUTO LOGIN desde localStorage */
+(async function(){
+  const saved=localStorage.getItem('tb_token');
+  if(!saved)return;
+  // Verify token is still valid
+  try{
+    const test=await fetch('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='+saved);
+    const data=await test.json();
+    if(data.error){localStorage.removeItem('tb_token');return;}
+    token=saved;
+    onLogin();
+  }catch(e){localStorage.removeItem('tb_token');}
+})();
+
 function setHeader(id){
   const t=TITLES[id]||['',''];
   document.getElementById('hdrTitle').textContent=t[0];
@@ -432,6 +446,7 @@ function showToast(msg){
 
 function doLogout(){
   token=null;
+  localStorage.removeItem('tb_token');
   document.getElementById('view-app').classList.remove('visible');
   document.getElementById('view-login').style.display='flex';
 }
@@ -460,6 +475,7 @@ function loginGoogle(){
 }
 
 function onLogin(){
+  localStorage.setItem('tb_token', token);
   document.getElementById('view-login').style.display='none';
   document.getElementById('view-app').classList.add('visible');
   setHeader('s-home');
