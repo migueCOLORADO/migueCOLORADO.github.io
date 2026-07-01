@@ -542,7 +542,9 @@ function renderRecs(){
     const bPago=r[2]==='Pagado'?'<span class="bdg pagado">Pagado</span>':'<span class="bdg pp">Pend. pago</span>';
     const bEnv=r[3]==='Recibido'?'<span class="bdg recibido">Recibido</span>':'<span class="bdg pe">Pend. envío</span>';
     const bMulti=multi?`<span class="bdg multi">${guias.length} guías</span>`:'';
-    const driveBtn=r[4]?`<div class="act-btn"><a href="${r[4]}" target="_blank"><i class="ti ti-photo"></i> Ver fotos</a></div>`:'';
+    const rawUrl=(r[4]||'').trim();
+    const driveUrl=rawUrl.startsWith('http')?rawUrl:'https://drive.google.com/drive/folders/'+rawUrl;
+    const driveBtn=rawUrl?`<div class="act-btn"><a href="${driveUrl}" target="_blank" rel="noopener"><i class="ti ti-photo"></i> Ver fotos</a></div>`:'';
     const guiasBox=multi?`<div class="guias-box"><b>Guías:</b> ${guias.join(', ')}</div>`:'';
     const realIdx=allRecs.indexOf(r);
     return`<div class="rec-card">
@@ -578,7 +580,18 @@ document.getElementById('ginP').addEventListener('keydown',e=>e.key==='Enter'&&a
 function removeGuia(t,v){if(t==='NP')guiasNP=guiasNP.filter(g=>g!==v);else guiasP=guiasP.filter(g=>g!==v);renderGuias(t)}
 function renderGuias(t){
   const arr=t==='NP'?guiasNP:guiasP;
-  document.getElementById('tags'+t).innerHTML=arr.map(g=>`<span class="guia-tag">${g}<button onclick="removeGuia('${t}','${g}')">×</button></span>`).join('');
+  const container=document.getElementById('tags'+t);
+  container.innerHTML='';
+  arr.forEach((g,i)=>{
+    const span=document.createElement('span');
+    span.className='guia-tag';
+    span.textContent=g+' ';
+    const btn=document.createElement('button');
+    btn.textContent='×';
+    btn.onclick=()=>removeGuia(t,g);
+    span.appendChild(btn);
+    container.appendChild(span);
+  });
 }
 
 /* FORMAT VALOR */
@@ -686,7 +699,8 @@ async function saveEdit(){
     await shUpdate(`${mesActual}!B${idx+2}:D${idx+2}`,[[val,pag,env]]);
     allRecs[idx][1]=val;allRecs[idx][2]=pag;allRecs[idx][3]=env;
     document.getElementById('edit-modal').classList.remove('open');
-    renderRecs();loadStats();showToast('Registro actualizado');
+    const guiaNum=allRecs[idx][0]||'';
+    renderRecs();loadStats();showToast('¡La guía '+guiaNum+' fue actualizada exitosamente!');
   }catch(e){showToast('Error al actualizar');console.error(e)}
 }
 </script>
