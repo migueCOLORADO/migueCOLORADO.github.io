@@ -69,81 +69,46 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
   overflow:hidden;
 }
 
-/* DESKTOP LAYOUT */
+/* SIDEBAR - hidden by default */
+#sidebar{display:none}
+.sb-btn{
+  width:100%;padding:12px 16px;border-radius:10px;
+  border:none;background:transparent;color:var(--text2);
+  font-size:14px;font-weight:500;cursor:pointer;
+  display:flex;align-items:center;gap:12px;text-align:left;
+  font-family:'Inter',sans-serif;transition:background 0.12s;
+}
+.sb-btn i{font-size:18px}
+.sb-btn:hover{background:var(--surface2)}
+.sb-btn.active{background:var(--accent-dim);color:var(--accent)}
+.sb-lbl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;padding:16px 16px 6px}
+#main-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+
 @media(min-width:768px){
   html,body{overflow:hidden}
-
   .hdr-inner{padding:18px 32px}
   .hdr h1{font-size:18px}
-
-  .screens{display:flex;flex-direction:row;overflow:hidden}
-
-  /* sidebar nav on desktop */
+  #app{flex-direction:column}
+  .app-body{display:flex;flex-direction:row;flex:1;overflow:hidden}
   #sidebar{
-    width:260px;
-    flex-shrink:0;
+    display:flex;flex-direction:column;
+    width:240px;flex-shrink:0;
     background:var(--surface);
     border-right:1px solid var(--border);
-    display:flex;
-    flex-direction:column;
-    padding:24px 16px;
-    gap:6px;
+    padding:20px 12px;gap:4px;
   }
-  .sb-btn{
-    width:100%;
-    padding:12px 16px;
-    border-radius:10px;
-    border:none;
-    background:transparent;
-    color:var(--text2);
-    font-size:14px;font-weight:500;
-    cursor:pointer;
-    display:flex;align-items:center;gap:12px;
-    text-align:left;
-    font-family:'Inter',sans-serif;
-    transition:background 0.12s;
-  }
-  .sb-btn i{font-size:18px}
-  .sb-btn:hover{background:var(--surface2)}
-  .sb-btn.active{background:var(--accent-dim);color:var(--accent)}
-  .sb-lbl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;padding:16px 16px 6px}
-
-  /* main content area */
-  #main-content{
-    flex:1;
-    overflow:hidden;
-    position:relative;
-    display:flex;
-    flex-direction:column;
-  }
-
-  .screen{padding-bottom:0}
-  .screen-body{padding:32px;max-width:900px}
-
-  /* stats wider on desktop */
+  #main-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+  .screens{flex:1}
+  .screen-body{padding:32px}
   .stats-grid{grid-template-columns:repeat(4,1fr)}
-
-  /* forms side by side on desktop */
+  .greeting h2{font-size:26px}
   #s-form-np .screen-body,
   #s-form-p .screen-body{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px 32px;
-    align-items:start;
-    max-width:860px;
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:20px 32px;align-items:start;
   }
-  #s-form-np .submit-btn,
-  #s-form-p .submit-btn,
-  #s-form-np .alert,
-  #s-form-p .alert{
-    grid-column:1/-1;
-  }
-
-  /* records wider */
-  #s-consultar .screen-body{max-width:900px}
-
-  .greeting h2{font-size:26px}
-  .main-btn{max-width:480px}
+  #s-form-np .submit-btn,#s-form-p .submit-btn,
+  #s-form-np .alert,#s-form-p .alert{grid-column:1/-1}
 }
 
 /* HEADER */
@@ -572,27 +537,28 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
     </div>
   </div>
 
-  <!-- DESKTOP SIDEBAR (hidden on mobile via CSS) -->
-  <div id="sidebar" style="display:none">
-    <span class="sb-lbl">Navegación</span>
-    <button class="sb-btn active" id="sb-home" onclick="sbGoTo('s-home','sb-home')">
-      <i class="ti ti-home"></i> Inicio
-    </button>
-    <button class="sb-btn" id="sb-consultar" onclick="sbGoTo('s-consultar','sb-consultar')">
-      <i class="ti ti-list-search"></i> Consultar registros
-    </button>
-    <button class="sb-btn" id="sb-add-menu" onclick="sbGoTo('s-add-menu','sb-add-menu')">
-      <i class="ti ti-package"></i> Agregar paquete
-    </button>
-    <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border)">
-      <span class="sb-lbl" style="padding-top:0">Cuenta</span>
-      <button class="sb-btn" onclick="logout()">
-        <i class="ti ti-logout"></i> Cerrar sesión
+  <!-- APP BODY (flex row on desktop) -->
+  <div class="app-body" id="appBody" style="display:none;flex:1;overflow:hidden">
+    <div id="sidebar">
+      <span class="sb-lbl">Navegación</span>
+      <button class="sb-btn active" id="sb-home" onclick="sbGoTo('s-home','sb-home')">
+        <i class="ti ti-home"></i> Inicio
       </button>
+      <button class="sb-btn" id="sb-consultar" onclick="sbGoTo('s-consultar','sb-consultar')">
+        <i class="ti ti-list-search"></i> Consultar registros
+      </button>
+      <button class="sb-btn" id="sb-add-menu" onclick="sbGoTo('s-add-menu','sb-add-menu')">
+        <i class="ti ti-package"></i> Agregar paquete
+      </button>
+      <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border)">
+        <span class="sb-lbl" style="padding-top:0">Cuenta</span>
+        <button class="sb-btn" onclick="logout()">
+          <i class="ti ti-logout"></i> Cerrar sesión
+        </button>
+      </div>
     </div>
-  </div>
-  <div id="main-content">
-  <div class="screens">
+    <div id="main-content">
+    <div class="screens">
 
     <!-- LOGIN -->
     <div class="screen active" id="s-login">
@@ -778,7 +744,8 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
     </div>
 
   </div><!-- /screens -->
-  </div><!-- /main-content -->
+    </div><!-- /main-content -->
+  </div><!-- /app-body -->
 </div><!-- /app -->
 
 <!-- TOAST -->
@@ -1188,12 +1155,16 @@ async function saveEdit(){
 /* RESPONSIVE */
 function initResponsive(){
   const isDesktop=window.innerWidth>=768;
-  const sidebar=document.getElementById('sidebar');
-  if(isDesktop&&token){
-    sidebar.style.display='flex';
-    document.getElementById('backBtn').style.display='none';
+  const appBody=document.getElementById('appBody');
+  const loginScreen=document.getElementById('s-login');
+  if(token){
+    appBody.style.display='flex';
+    loginScreen.style.display='none';
+    if(isDesktop){
+      document.getElementById('backBtn').style.display='none';
+    }
   }else{
-    sidebar.style.display='none';
+    appBody.style.display='none';
   }
 }
 
@@ -1215,6 +1186,8 @@ window.addEventListener('resize',initResponsive);
 /* override onLogin to init responsive */
 const _origOnLogin=onLogin;
 onLogin=function(){
+  document.getElementById('appBody').style.display='flex';
+  document.getElementById('s-login').style.display='none';
   _origOnLogin();
   initResponsive();
 }
