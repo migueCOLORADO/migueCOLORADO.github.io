@@ -59,8 +59,7 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
 
 /* APP SHELL */
 #app{
-  max-width:430px;
-  margin:0 auto;
+  width:100%;
   height:100vh;
   height:100dvh;
   display:flex;
@@ -68,6 +67,83 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
   background:var(--bg);
   position:relative;
   overflow:hidden;
+}
+
+/* DESKTOP LAYOUT */
+@media(min-width:768px){
+  html,body{overflow:hidden}
+
+  .hdr-inner{padding:18px 32px}
+  .hdr h1{font-size:18px}
+
+  .screens{display:flex;flex-direction:row;overflow:hidden}
+
+  /* sidebar nav on desktop */
+  #sidebar{
+    width:260px;
+    flex-shrink:0;
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    padding:24px 16px;
+    gap:6px;
+  }
+  .sb-btn{
+    width:100%;
+    padding:12px 16px;
+    border-radius:10px;
+    border:none;
+    background:transparent;
+    color:var(--text2);
+    font-size:14px;font-weight:500;
+    cursor:pointer;
+    display:flex;align-items:center;gap:12px;
+    text-align:left;
+    font-family:'Inter',sans-serif;
+    transition:background 0.12s;
+  }
+  .sb-btn i{font-size:18px}
+  .sb-btn:hover{background:var(--surface2)}
+  .sb-btn.active{background:var(--accent-dim);color:var(--accent)}
+  .sb-lbl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;padding:16px 16px 6px}
+
+  /* main content area */
+  #main-content{
+    flex:1;
+    overflow:hidden;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .screen{padding-bottom:0}
+  .screen-body{padding:32px;max-width:900px}
+
+  /* stats wider on desktop */
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+
+  /* forms side by side on desktop */
+  #s-form-np .screen-body,
+  #s-form-p .screen-body{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px 32px;
+    align-items:start;
+    max-width:860px;
+  }
+  #s-form-np .submit-btn,
+  #s-form-p .submit-btn,
+  #s-form-np .alert,
+  #s-form-p .alert{
+    grid-column:1/-1;
+  }
+
+  /* records wider */
+  #s-consultar .screen-body{max-width:900px}
+
+  .greeting h2{font-size:26px}
+  .main-btn{max-width:480px}
 }
 
 /* HEADER */
@@ -118,28 +194,6 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
   align-items:center;
   justify-content:center;
   background:var(--brand);
-  position:relative;
-  overflow:hidden;
-}
-#s-login::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background-image:
-    radial-gradient(circle at 20% 20%, rgba(99,102,241,0.18) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(99,102,241,0.12) 0%, transparent 50%),
-    radial-gradient(circle at 60% 10%, rgba(16,185,129,0.08) 0%, transparent 40%);
-  pointer-events:none;
-}
-#s-login::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  background-image:
-    linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px);
-  background-size:32px 32px;
-  pointer-events:none;
 }
 #s-login.active{display:flex}
 .login-wrap{
@@ -150,8 +204,6 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
   align-items:center;
   gap:22px;
   max-width:320px;
-  position:relative;
-  z-index:1;
 }
 .login-logo{
   width:72px;height:72px;
@@ -520,6 +572,26 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
     </div>
   </div>
 
+  <!-- DESKTOP SIDEBAR (hidden on mobile via CSS) -->
+  <div id="sidebar" style="display:none">
+    <span class="sb-lbl">Navegación</span>
+    <button class="sb-btn active" id="sb-home" onclick="sbGoTo('s-home','sb-home')">
+      <i class="ti ti-home"></i> Inicio
+    </button>
+    <button class="sb-btn" id="sb-consultar" onclick="sbGoTo('s-consultar','sb-consultar')">
+      <i class="ti ti-list-search"></i> Consultar registros
+    </button>
+    <button class="sb-btn" id="sb-add-menu" onclick="sbGoTo('s-add-menu','sb-add-menu')">
+      <i class="ti ti-package"></i> Agregar paquete
+    </button>
+    <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border)">
+      <span class="sb-lbl" style="padding-top:0">Cuenta</span>
+      <button class="sb-btn" onclick="logout()">
+        <i class="ti ti-logout"></i> Cerrar sesión
+      </button>
+    </div>
+  </div>
+  <div id="main-content">
   <div class="screens">
 
     <!-- LOGIN -->
@@ -706,6 +778,7 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
     </div>
 
   </div><!-- /screens -->
+  </div><!-- /main-content -->
 </div><!-- /app -->
 
 <!-- TOAST -->
@@ -1111,6 +1184,41 @@ async function saveEdit(){
     showToast('Error al actualizar');console.error(e);
   }
 }
+
+/* RESPONSIVE */
+function initResponsive(){
+  const isDesktop=window.innerWidth>=768;
+  const sidebar=document.getElementById('sidebar');
+  if(isDesktop&&token){
+    sidebar.style.display='flex';
+    document.getElementById('backBtn').style.display='none';
+  }else{
+    sidebar.style.display='none';
+  }
+}
+
+function sbGoTo(screenId, btnId){
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(btnId).classList.add('active');
+  goTo(screenId);
+}
+
+function logout(){
+  token=null;
+  document.getElementById('sidebar').style.display='none';
+  goTo('s-login');
+  document.getElementById('backBtn').style.display='none';
+}
+
+window.addEventListener('resize',initResponsive);
+
+/* override onLogin to init responsive */
+const _origOnLogin=onLogin;
+onLogin=function(){
+  _origOnLogin();
+  initResponsive();
+}
+
 </script>
 </body>
 </html>
