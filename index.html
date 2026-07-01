@@ -118,6 +118,28 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
   align-items:center;
   justify-content:center;
   background:var(--brand);
+  position:relative;
+  overflow:hidden;
+}
+#s-login::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(99,102,241,0.18) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(99,102,241,0.12) 0%, transparent 50%),
+    radial-gradient(circle at 60% 10%, rgba(16,185,129,0.08) 0%, transparent 40%);
+  pointer-events:none;
+}
+#s-login::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px);
+  background-size:32px 32px;
+  pointer-events:none;
 }
 #s-login.active{display:flex}
 .login-wrap{
@@ -128,6 +150,8 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
   align-items:center;
   gap:22px;
   max-width:320px;
+  position:relative;
+  z-index:1;
 }
 .login-logo{
   width:72px;height:72px;
@@ -615,7 +639,7 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
         </div>
         <div class="form-group">
           <label class="form-lbl">Valor (COP)</label>
-          <input class="form-input" id="valNP" placeholder="0" type="number" min="0" inputmode="numeric">
+          <input class="form-input" id="valNP" placeholder="0" type="text" inputmode="decimal" oninput="fmtVal(this)">
         </div>
         <div class="form-group">
           <label class="form-lbl">Estado de pago</label>
@@ -659,7 +683,7 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
         </div>
         <div class="form-group">
           <label class="form-lbl">Valor pagado (COP)</label>
-          <input class="form-input" id="valP" placeholder="0" type="number" min="0" inputmode="numeric">
+          <input class="form-input" id="valP" placeholder="0" type="text" inputmode="decimal" oninput="fmtVal(this)">
         </div>
         <div class="form-group">
           <label class="form-lbl">Estado de envío</label>
@@ -695,7 +719,7 @@ html,body{height:100%;overflow:hidden;background:#0f0f1a;font-family:'Inter',san
     <input type="hidden" id="editRowIdx">
     <div class="form-group">
       <label class="form-lbl">Valor (COP)</label>
-      <input class="form-input" id="editVal" type="number" min="0" inputmode="numeric">
+      <input class="form-input" id="editVal" type="text" inputmode="decimal" oninput="fmtVal(this)">
     </div>
     <div class="form-group">
       <label class="form-lbl">Estado de pago</label>
@@ -1012,7 +1036,7 @@ async function submitForm(t){
     alertMsg.textContent='Agrega al menos un # de guía.';
     alertEl.className='alert warn show';return;
   }
-  const val=document.getElementById('val'+t).value||'0';
+  const val=(document.getElementById('val'+t).value||'0').replace(/\./g,'').replace(',','.');
   const pag=t==='NP'?document.getElementById('pagNP').value:'Pagado';
   const env=document.getElementById('env'+t).value;
   const photos=t==='NP'?photosNP:photosP;
@@ -1049,6 +1073,15 @@ async function submitForm(t){
   btn.disabled=false;btn.innerHTML='<i class="ti ti-cloud-upload"></i> Guardar en Sheets';
 }
 
+
+/* FORMAT VALOR */
+function fmtVal(el){
+  let raw=el.value.replace(/[^0-9,]/g,'');
+  let parts=raw.split(',');
+  let int=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  el.value=parts.length>1?int+','+parts[1]:int;
+}
+
 /* EDIT */
 function openEdit(idx){
   const r=allRecs[idx];if(!r)return;
@@ -1064,7 +1097,7 @@ function closeModal(e){
 }
 async function saveEdit(){
   const idx=parseInt(document.getElementById('editRowIdx').value);
-  const val=document.getElementById('editVal').value;
+  const val=(document.getElementById('editVal').value||'0').replace(/\./g,'').replace(',','.');
   const pag=document.getElementById('editPag').value;
   const env=document.getElementById('editEnv').value;
   const sheetRow=idx+2;
