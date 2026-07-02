@@ -427,7 +427,7 @@ const SHEET_PUBLISH='1g2rHbUw7wnWyqNwGFWXzYqlpcv4YVpfaZm2OecTYFD0';
 const SHEET_DRAFT='1htZToSgFPnTT8eE41sve75lZeYqDCbOPUpnPcL6jcNY';
 const DRIVE_FOLDER='1fhZVCY_BxXdBduWmDW2XEZPmXqs4pB4S';
 const CLIENT_ID='316975303093-mn5qq3otcm9g6qo18vvh4e08bsdsevch.apps.googleusercontent.com';
-const SCOPES='https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file';
+const SCOPES='https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
 const ADMIN_EMAIL='miguelcolorado2007@gmail.com';
 let isDraft=localStorage.getItem('tb_mode')==='draft';
 let SHEET_ID=isDraft?SHEET_DRAFT:SHEET_PUBLISH;
@@ -547,12 +547,13 @@ async function onLogin(){
   document.getElementById('view-login').style.display='none';
   document.getElementById('view-app').classList.add('visible');
   setHeader('s-home');
-  // Fetch user email to check if admin
+  // Fetch user email via tokeninfo (works with any valid token)
   try{
-    const r=await fetch('https://www.googleapis.com/oauth2/v2/userinfo',{headers:{Authorization:'Bearer '+token}});
+    const r=await fetch('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='+token);
     const d=await r.json();
+    console.log('Token info:', d);
     initEnvToggle(d.email||'');
-  }catch(e){}
+  }catch(e){console.error('Token info error:',e)}
   loadStats();
 }
 
