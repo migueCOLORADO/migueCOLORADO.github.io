@@ -60,7 +60,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 .app-layout{display:flex;flex:1;overflow:hidden}
 
 /* sidebar */
-.sidebar{display:none;width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);flex-direction:column;padding:20px 12px;gap:4px}
+.sidebar{display:none;width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border-strong);flex-direction:column;padding:20px 12px;gap:4px}
 .sb-lbl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;padding:16px 16px 6px}
 .sb-btn{width:100%;padding:12px 16px;border-radius:10px;border:none;background:transparent;color:var(--text2);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;font-family:'Inter',sans-serif;transition:background 0.12s}
 .sb-btn i{font-size:18px}
@@ -69,7 +69,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 .sb-footer{margin-top:auto;padding-top:16px;border-top:1px solid var(--border)}
 
 /* screens */
-.screens-wrap{flex:1;overflow:hidden;position:relative}
+.screens-wrap{flex:1;overflow:hidden;position:relative;background:var(--bg)}
 .screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;display:none;padding-bottom:env(safe-area-inset-bottom,20px)}
 .screen.active{display:block}
 .screen-body{padding:20px;display:flex;flex-direction:column;gap:14px}
@@ -81,7 +81,8 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
   .sidebar{display:flex}
   .screen-body{padding:32px;max-width:960px}
   .stats-grid{grid-template-columns:repeat(4,1fr)!important}
-  .greeting h2{font-size:26px}
+  .greeting h2{font-size:28px}
+  .greeting{padding-bottom:8px}
   #s-form-np .screen-body,#s-form-p .screen-body{
     display:grid;grid-template-columns:1fr 1fr;gap:20px 32px;align-items:start
   }
@@ -90,7 +91,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 }
 
 /* ── COMPONENTS ── */
-.greeting h2{font-size:21px;font-weight:600;color:var(--text)}
+.greeting h2{font-size:21px;font-weight:600;color:var(--text);display:block!important;visibility:visible!important}
 .greeting p{font-size:13px;color:var(--text2);margin-top:3px}
 .sec-lbl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -449,17 +450,22 @@ const TITLES={
 document.getElementById('mesBadge').textContent=mesActual+' '+anio;
 document.getElementById('fechaHoy').textContent=now.toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'});
 
-/* AUTO LOGIN desde localStorage */
+/* AUTO LOGIN — redirect token or localStorage */
 (async function(){
+  // 1. Check if coming back from Google OAuth redirect
+  if(handleRedirectToken()){
+    await onLogin();
+    return;
+  }
+  // 2. Check localStorage for saved token
   const saved=localStorage.getItem('tb_token');
   if(!saved)return;
-  // Verify token is still valid
   try{
     const test=await fetch('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='+saved);
     const data=await test.json();
     if(data.error){localStorage.removeItem('tb_token');return;}
     token=saved;
-    onLogin();
+    await onLogin();
   }catch(e){localStorage.removeItem('tb_token');}
 })();
 
@@ -518,20 +524,22 @@ function loginGoogle(){
     redirect_uri:'https://miguecolorado.github.io/',
     response_type:'token',
     scope:SCOPES,
-    prompt:'consent'
+    prompt:'consent',
+    include_granted_scopes:'true'
   });
-  const popup=window.open('https://accounts.google.com/o/oauth2/v2/auth?'+p,'oauth','width=500,height=620,left=100,top=100');
-  const t=setInterval(()=>{
-    try{
-      if(popup&&popup.closed){clearInterval(t);return;}
-      const hash=popup&&popup.location&&popup.location.hash;
-      if(hash&&hash.includes('access_token')){
-        const q=new URLSearchParams(hash.slice(1));
-        token=q.get('access_token');
-        clearInterval(t);popup.close();onLogin();
-      }
-    }catch(e){}
-  },400);
+  window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p;
+}
+
+// Handle redirect back with token in URL hash
+function handleRedirectToken(){
+  if(!window.location.hash)return false;
+  const params=new URLSearchParams(window.location.hash.slice(1));
+  const t=params.get('access_token');
+  if(!t)return false;
+  token=t;
+  // Clean URL without reloading
+  window.history.replaceState(null,'','https://miguecolorado.github.io/');
+  return true;
 }
 
 async function onLogin(){
@@ -578,7 +586,8 @@ let userEmail='';
 
 function initEnvToggle(email){
   userEmail=email;
-  if(email.toLowerCase()!==ADMIN_EMAIL.toLowerCase())return;
+  console.log('User email:', email, '| Admin:', ADMIN_EMAIL);
+  if(email.toLowerCase().trim()!==ADMIN_EMAIL.toLowerCase().trim())return;
   const btn=document.getElementById('env-toggle');
   btn.style.display='flex';
   applyEnv();
