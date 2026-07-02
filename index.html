@@ -182,6 +182,51 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 .modal-sheet{width:100%;max-width:500px;margin:0 auto;background:var(--surface);border-radius:20px 20px 0 0;padding:20px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 20px);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
 .modal-handle{width:40px;height:4px;border-radius:2px;background:var(--border-strong);margin:0 auto 4px}
 .modal-title{font-size:17px;font-weight:600;color:var(--text)}
+
+/* DRAFT/PUBLISH TOGGLE */
+#env-toggle{
+  position:fixed;bottom:24px;right:20px;
+  display:none;
+  align-items:center;gap:8px;
+  background:var(--surface);
+  border:1px solid var(--border-strong);
+  border-radius:20px;
+  padding:8px 14px 8px 10px;
+  cursor:pointer;
+  box-shadow:var(--shadow,0 2px 12px rgba(0,0,0,0.12));
+  z-index:200;
+  font-family:'Inter',sans-serif;
+  font-size:12px;font-weight:500;
+  color:var(--text2);
+  transition:all 0.2s;
+}
+#env-toggle:hover{border-color:var(--accent)}
+#env-toggle .toggle-track{
+  width:32px;height:18px;border-radius:20px;
+  background:var(--text3);
+  position:relative;transition:background 0.2s;flex-shrink:0;
+}
+#env-toggle.publish .toggle-track{background:var(--success)}
+#env-toggle .toggle-thumb{
+  width:12px;height:12px;border-radius:50%;
+  background:#fff;
+  position:absolute;top:3px;left:3px;
+  transition:transform 0.2s;
+}
+#env-toggle.publish .toggle-thumb{transform:translateX(14px)}
+#env-toggle .env-label{color:var(--text2)}
+#env-toggle.publish .env-label{color:var(--success)}
+.draft-banner{
+  display:none;
+  background:var(--warn-light);
+  color:var(--warn);
+  border-bottom:1px solid rgba(245,158,11,0.3);
+  font-size:12px;font-weight:500;
+  padding:6px 18px;
+  align-items:center;gap:8px;
+}
+.draft-banner.show{display:flex}
+
 </style>
 </head>
 <body>
@@ -211,6 +256,17 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
       <span class="mes-badge" id="mesBadge"></span>
     </div>
   </div>
+
+  <!-- DRAFT BANNER -->
+  <div class="draft-banner" id="draftBanner">
+    <i class="ti ti-flask"></i> Modo Draft — los datos se guardan en el Sheet de pruebas
+  </div>
+
+  <!-- ENV TOGGLE (solo admin) -->
+  <button id="env-toggle" onclick="toggleEnv()" title="Cambiar modo">
+    <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    <span class="env-label" id="envLabel">Draft</span>
+  </button>
 
   <div class="app-layout">
     <!-- SIDEBAR (desktop only) -->
@@ -366,10 +422,14 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 </div>
 
 <script>
-const SHEET_ID='1g2rHbUw7wnWyqNwGFWXzYqlpcv4YVpfaZm2OecTYFD0';
+const SHEET_PUBLISH='1g2rHbUw7wnWyqNwGFWXzYqlpcv4YVpfaZm2OecTYFD0';
+const SHEET_DRAFT='1htZToSgFPnTT8eE41sve75lZeYqDCbOPUpnPcL6jcNY';
 const DRIVE_FOLDER='1fhZVCY_BxXdBduWmDW2XEZPmXqs4pB4S';
 const CLIENT_ID='316975303093-mn5qq3otcm9g6qo18vvh4e08bsdsevch.apps.googleusercontent.com';
 const SCOPES='https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file';
+const ADMIN_EMAIL='miguelcolorado2007@gmail.com';
+let isDraft=localStorage.getItem('tb_mode')==='draft';
+let SHEET_ID=isDraft?SHEET_DRAFT:SHEET_PUBLISH;
 const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const now=new Date();
 const mesActual=MONTHS[now.getMonth()];
@@ -474,11 +534,17 @@ function loginGoogle(){
   },400);
 }
 
-function onLogin(){
+async function onLogin(){
   localStorage.setItem('tb_token', token);
   document.getElementById('view-login').style.display='none';
   document.getElementById('view-app').classList.add('visible');
   setHeader('s-home');
+  // Fetch user email to check if admin
+  try{
+    const r=await fetch('https://www.googleapis.com/oauth2/v2/userinfo',{headers:{Authorization:'Bearer '+token}});
+    const d=await r.json();
+    initEnvToggle(d.email||'');
+  }catch(e){}
   loadStats();
 }
 
@@ -505,6 +571,44 @@ async function ensureSheet(name){
     {method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
      body:JSON.stringify({requests:[{addSheet:{properties:{title:name}}}]})});
   await shAppend(name+'!A1',[['# Guía(s)','Valor (COP)','Estado de pago','Estado de envío','Fotos Drive','Fecha registro']]);
+}
+
+/* ENV TOGGLE */
+let userEmail='';
+
+function initEnvToggle(email){
+  userEmail=email;
+  if(email.toLowerCase()!==ADMIN_EMAIL.toLowerCase())return;
+  const btn=document.getElementById('env-toggle');
+  btn.style.display='flex';
+  applyEnv();
+}
+
+function applyEnv(){
+  isDraft=localStorage.getItem('tb_mode')==='draft';
+  SHEET_ID=isDraft?SHEET_DRAFT:SHEET_PUBLISH;
+  const btn=document.getElementById('env-toggle');
+  const label=document.getElementById('envLabel');
+  const banner=document.getElementById('draftBanner');
+  if(isDraft){
+    btn.classList.remove('publish');
+    label.textContent='Draft';
+    banner.classList.add('show');
+  }else{
+    btn.classList.add('publish');
+    label.textContent='Publish';
+    banner.classList.remove('show');
+  }
+}
+
+function toggleEnv(){
+  isDraft=!isDraft;
+  localStorage.setItem('tb_mode',isDraft?'draft':'publish');
+  SHEET_ID=isDraft?SHEET_DRAFT:SHEET_PUBLISH;
+  applyEnv();
+  // Reload stats with new sheet
+  loadStats();
+  if(document.getElementById('s-consultar').classList.contains('active'))loadRecs();
 }
 
 /* STATS */
