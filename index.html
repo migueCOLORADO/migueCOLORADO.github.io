@@ -146,13 +146,13 @@ textarea.form-input{resize:vertical;min-height:70px}
 .photo-del{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;border:none;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .submit-btn{width:100%;padding:15px;border-radius:12px;background:var(--accent);color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.15s;margin-top:4px}
 .submit-btn:disabled{opacity:0.45;cursor:not-allowed}
-.alert{padding:12px 14px;border-radius:10px;font-size:13px;display:none;align-items:flex-start;gap:9px;line-height:1.5}
-.alert i{font-size:17px;flex-shrink:0;margin-top:1px}
-.alert.show{display:flex}
-.alert.warn{background:var(--warn-light);color:#92400e;border:1px solid rgba(245,158,11,0.3)}
+.alert{padding:12px 14px;border-radius:10px;font-size:13px;display:none;align-items:flex-start;gap:9px;line-height:1.5;font-weight:500}
+.alert i{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert.show{display:flex;animation:alertPop 0.2s ease-out}
+@keyframes alertPop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.alert.warn,.alert.err{background:rgba(245,158,11,0.6);color:#3d2c00;border:1px solid rgba(245,158,11,0.8)}
 .alert.success{background:var(--success-light);color:#065f46;border:1px solid rgba(16,185,129,0.3)}
-.alert.err{background:var(--danger-light);color:#991b1b;border:1px solid rgba(239,68,68,0.3)}
-@media(prefers-color-scheme:dark){.alert.warn{color:#fcd34d}.alert.success{color:#6ee7b7}.alert.err{color:#fca5a5}}
+@media(prefers-color-scheme:dark){.alert.warn,.alert.err{color:#1a1200}.alert.success{color:#6ee7b7}}
 .loader{display:none;align-items:center;justify-content:center;gap:10px;padding:28px 20px;font-size:13px;color:var(--text2)}
 .loader.show{display:flex}
 .spin{width:18px;height:18px;border:2px solid var(--border-strong);border-top-color:var(--accent);border-radius:50%;animation:spin 0.65s linear infinite}
@@ -292,7 +292,6 @@ textarea.form-input{resize:vertical;min-height:70px}
 
       <div class="screen" id="s-form-np">
         <div class="screen-body">
-          <div class="alert warn" id="alertNP"><i class="ti ti-alert-triangle"></i><span id="alertNPMsg"></span></div>
           <div class="form-group">
             <label class="form-lbl"># Guías</label>
             <div class="guia-tags" id="tagsNP"></div>
@@ -300,7 +299,7 @@ textarea.form-input{resize:vertical;min-height:70px}
               <input class="form-input" id="ginNP" placeholder="Ej: 7749283901" type="text" inputmode="numeric">
               <button class="add-guia-btn" onclick="addGuia('NP')"><i class="ti ti-plus"></i></button>
             </div>
-            <p class="hint">Pago conjunto → agrega múltiples guías.</p>
+            <p class="hint">Escribe el número y toca + (o Enter). Si olvidas tocar +, la app lo agrega sola al guardar.</p>
           </div>
           <div class="form-group">
             <label class="form-lbl">Descripción del paquete</label>
@@ -323,13 +322,13 @@ textarea.form-input{resize:vertical;min-height:70px}
             <div class="photos-grid" id="photosNP"><div class="photo-thumb" onclick="addPhoto('NP')"><i class="ti ti-camera-plus"></i></div></div>
             <p class="hint">Se suben automáticamente a Google Drive.</p>
           </div>
+          <div class="alert warn" id="alertNP"><i class="ti ti-alert-triangle"></i><span id="alertNPMsg"></span></div>
           <button class="submit-btn" id="btnNP" onclick="submitForm('NP')"><i class="ti ti-cloud-upload"></i> Guardar en Sheets</button>
         </div>
       </div>
 
       <div class="screen" id="s-form-p">
         <div class="screen-body">
-          <div class="alert warn" id="alertP"><i class="ti ti-alert-triangle"></i><span id="alertPMsg"></span></div>
           <div class="form-group">
             <label class="form-lbl"># Guías</label>
             <div class="guia-tags" id="tagsP"></div>
@@ -337,7 +336,7 @@ textarea.form-input{resize:vertical;min-height:70px}
               <input class="form-input" id="ginP" placeholder="Ej: 7749283901" type="text" inputmode="numeric">
               <button class="add-guia-btn" onclick="addGuia('P')"><i class="ti ti-plus"></i></button>
             </div>
-            <p class="hint">Pago conjunto → agrega múltiples guías.</p>
+            <p class="hint">Escribe el número y toca + (o Enter). Si olvidas tocar +, la app lo agrega sola al guardar.</p>
           </div>
           <div class="form-group">
             <label class="form-lbl">Descripción del paquete</label>
@@ -356,6 +355,7 @@ textarea.form-input{resize:vertical;min-height:70px}
             <div class="photos-grid" id="photosP"><div class="photo-thumb" onclick="addPhoto('P')"><i class="ti ti-camera-plus"></i></div></div>
             <p class="hint">Se suben automáticamente a Google Drive.</p>
           </div>
+          <div class="alert warn" id="alertP"><i class="ti ti-alert-triangle"></i><span id="alertPMsg"></span></div>
           <button class="submit-btn" id="btnP" onclick="submitForm('P')"><i class="ti ti-cloud-upload"></i> Guardar en Sheets</button>
         </div>
       </div>
@@ -642,12 +642,22 @@ async function findRowByGuiaKey(sheetName,guiaKey){
 
 /* AUDIT LOG */
 async function logAction(accion,hoja,guiaKey,prevArr,newArr){
+  await ensureAuditSheet();
+  const _d=new Date();
+  const fecha=_d.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+_d.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  await shAppend('AuditLog!A2',[[fecha,userEmail||'(sin correo)',accion,hoja,guiaKey,prevArr?JSON.stringify(prevArr):'',newArr?JSON.stringify(newArr):'','No']]);
+}
+
+async function logActionSafe(accion,hoja,guiaKey,prevArr,newArr){
   try{
-    await ensureAuditSheet();
-    const _d=new Date();
-    const fecha=_d.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+_d.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
-    await shAppend('AuditLog!A2',[[fecha,userEmail,accion,hoja,guiaKey,prevArr?JSON.stringify(prevArr):'',newArr?JSON.stringify(newArr):'','No']]);
-  }catch(e){console.error('Error en log de auditoría',e)}
+    await logAction(accion,hoja,guiaKey,prevArr,newArr);
+  }catch(e){
+    console.error('Reintentando log de auditoría...',e);
+    try{
+      await new Promise(res=>setTimeout(res,900));
+      await logAction(accion,hoja,guiaKey,prevArr,newArr);
+    }catch(e2){console.error('Falló el log de auditoría tras reintento',e2)}
+  }
 }
 
 async function loadAudit(){
@@ -886,7 +896,10 @@ async function submitForm(t){
   const alertMsg=document.getElementById('alert'+t+'Msg');
   const btn=document.getElementById('btn'+t);
   alertEl.className='alert';
-  if(!guias.length){alertMsg.textContent='Agrega al menos un # de guía.';alertEl.className='alert warn show';return}
+  // Auto-agregar texto pendiente en el input de guía si el usuario olvidó tocar +
+  const pendingInp=document.getElementById('gin'+t);
+  if(pendingInp&&pendingInp.value.trim()){addGuia(t)}
+  if(!guias.length){alertMsg.textContent='Falta el # de guía. Escríbelo arriba y toca + antes de guardar.';alertEl.className='alert warn show';alertEl.scrollIntoView({behavior:'smooth',block:'center'});return}
   const val=parseVal(document.getElementById('val'+t).value);
   const pag=t==='NP'?document.getElementById('pagNP').value:'Pagado';
   const env=document.getElementById('env'+t).value;
@@ -898,7 +911,7 @@ async function submitForm(t){
     const ex=await shGet(mesActual+'!A2:A1000');
     const existGs=(ex.values||[]).flatMap(r=>(r[0]||'').split(',').map(g=>g.trim()));
     const dup=guias.find(g=>existGs.includes(g));
-    if(dup){alertMsg.textContent=`El # guía ${dup} ya está registrado.`;alertEl.className='alert warn show';btn.disabled=false;btn.innerHTML='<i class="ti ti-cloud-upload"></i> Guardar en Sheets';return}
+    if(dup){alertMsg.textContent=`El # guía ${dup} ya está registrado. Búscalo en Consultar registros para editarlo.`;alertEl.className='alert warn show';alertEl.scrollIntoView({behavior:'smooth',block:'center'});btn.disabled=false;btn.innerHTML='<i class="ti ti-cloud-upload"></i> Guardar en Sheets';return}
     const folderName=guias[0]+'_'+new Date().toISOString().slice(0,10);
     const driveUrl=await uploadPhotos(photos,folderName);
     const fechaExacta=new Date();
@@ -906,7 +919,7 @@ async function submitForm(t){
     const guiaKey=guias.join(', ');
     const newRow=[guiaKey,val,pag,env,driveUrl,fecha,desc];
     await shAppend(mesActual+'!A2',[newRow]);
-    logAction('Agregar',mesActual,guiaKey,null,newRow);
+    await logActionSafe('Agregar',mesActual,guiaKey,null,newRow);
     if(t==='NP'){guiasNP=[];photosNP=[];}else{guiasP=[];photosP=[];}
     renderGuias(t);
     document.getElementById('photos'+t).innerHTML=`<div class="photo-thumb" onclick="addPhoto('${t}')"><i class="ti ti-camera-plus"></i></div>`;
@@ -914,7 +927,13 @@ async function submitForm(t){
     document.getElementById('desc'+t).value='';
     alertMsg.textContent='¡Registro guardado en Sheets!';alertEl.className='alert success show';
     loadStats();setTimeout(()=>{alertEl.className='alert'},3000);
-  }catch(e){alertMsg.textContent='Error al guardar. Verifica permisos y conexión.';alertEl.className='alert err show';console.error(e)}
+  }catch(e){
+    const msg=(e&&e.message)?e.message:'Error desconocido';
+    alertMsg.textContent='No se pudo guardar: '+msg+'. Verifica tu conexión e inténtalo de nuevo.';
+    alertEl.className='alert warn show';
+    alertEl.scrollIntoView({behavior:'smooth',block:'center'});
+    console.error(e);
+  }
   btn.disabled=false;btn.innerHTML='<i class="ti ti-cloud-upload"></i> Guardar en Sheets';
 }
 
@@ -944,7 +963,7 @@ async function saveEdit(){
     await shUpdate(`${mesActual}!G${sheetRow}:G${sheetRow}`,[[desc]]);
     allRecs[idx][1]=val;allRecs[idx][2]=pag;allRecs[idx][3]=env;allRecs[idx][6]=desc;
     const newData=[...allRecs[idx]];
-    logAction('Editar',mesActual,guiaKey,prevData,newData);
+    await logActionSafe('Editar',mesActual,guiaKey,prevData,newData);
     document.getElementById('edit-modal').classList.remove('open');
     renderRecs();loadStats();
     showToast('¡La guía '+guiaKey+' fue actualizada exitosamente!');
@@ -963,7 +982,7 @@ async function doDelete(idx){
   const guiaKey=r[0]||'';
   try{
     await deleteSheetRow(mesActual,idx+1);
-    logAction('Eliminar',mesActual,guiaKey,r,null);
+    await logActionSafe('Eliminar',mesActual,guiaKey,r,null);
     allRecs.splice(idx,1);
     renderRecs();loadStats();
     showToast('Registro de guía '+guiaKey+' eliminado');
