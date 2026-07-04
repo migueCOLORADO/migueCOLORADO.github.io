@@ -560,8 +560,9 @@ async function shGet(range){
   const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}`,{headers:{Authorization:'Bearer '+token}});
   return r.json();
 }
-async function shAppend(range,values){
-  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
+async function shAppend(range,values,inputOption){
+  const opt=inputOption||'RAW';
+  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=${opt}&insertDataOption=INSERT_ROWS`,
     {method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({values})});
   return r.json();
 }
@@ -613,7 +614,8 @@ async function findRowByGuiaKey(sheetName,guiaKey){
 async function logAction(accion,hoja,guiaKey,prevArr,newArr){
   try{
     await ensureAuditSheet();
-    const fecha=new Date().toLocaleString('es-CO');
+    const _d=new Date();
+    const fecha=_d.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+_d.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
     await shAppend('AuditLog!A2',[[fecha,userEmail,accion,hoja,guiaKey,prevArr?JSON.stringify(prevArr):'',newArr?JSON.stringify(newArr):'','No']]);
   }catch(e){console.error('Error en log de auditoría',e)}
 }
@@ -869,7 +871,8 @@ async function submitForm(t){
     if(dup){alertMsg.textContent=`El # guía ${dup} ya está registrado.`;alertEl.className='alert warn show';btn.disabled=false;btn.innerHTML='<i class="ti ti-cloud-upload"></i> Guardar en Sheets';return}
     const folderName=guias[0]+'_'+new Date().toISOString().slice(0,10);
     const driveUrl=await uploadPhotos(photos,folderName);
-    const fecha=now.toLocaleDateString('es-CO');
+    const fechaExacta=new Date();
+    const fecha=fechaExacta.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+fechaExacta.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
     const guiaKey=guias.join(', ');
     const newRow=[guiaKey,val,pag,env,driveUrl,fecha,desc];
     await shAppend(mesActual+'!A2',[newRow]);
