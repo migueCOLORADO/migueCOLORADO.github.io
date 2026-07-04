@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1a1a2e">
 <title>Tienda Brava</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css">
@@ -29,15 +28,8 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
   --warn-light:rgba(245,158,11,0.15);--danger-light:rgba(239,68,68,0.15);
 }}
 
-/* ── LOGIN ── */
-#view-login{
-  display:flex;align-items:center;justify-content:center;
-  min-height:100vh;background:var(--brand);
-}
-.login-wrap{
-  padding:40px 28px;text-align:center;
-  display:flex;flex-direction:column;align-items:center;gap:22px;max-width:320px;width:100%;
-}
+#view-login{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--brand)}
+.login-wrap{padding:40px 28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px;max-width:320px;width:100%}
 .login-logo{width:72px;height:72px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff}
 .login-title{font-size:24px;font-weight:600;color:#fff}
 .login-sub{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.6}
@@ -45,22 +37,18 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 .google-btn svg{width:20px;height:20px;flex-shrink:0}
 .login-hint{font-size:12px;color:rgba(255,255,255,0.35)}
 
-/* ── APP SHELL ── */
 #view-app{display:none;height:100vh;height:100dvh;flex-direction:column}
 #view-app.visible{display:flex}
-
 .hdr{background:var(--brand);flex-shrink:0;z-index:10;padding:env(safe-area-inset-top,0) 0 0}
 .hdr-inner{display:flex;align-items:center;gap:10px;padding:14px 18px}
 .hdr h1{font-size:16px;font-weight:600;color:#fff;flex:1}
 .hdr p{font-size:11px;color:rgba(255,255,255,0.55);margin-top:1px}
 .back-btn{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,0.1);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:18px}
 .mes-badge{background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.refresh-btn{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,0.1);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:16px}
 
-/* ── LAYOUT BODY ── */
 .app-layout{display:flex;flex:1;overflow:hidden}
-
-/* sidebar */
-.sidebar{display:none;width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border-strong);flex-direction:column;padding:20px 12px;gap:4px}
+.sidebar{display:none;width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);flex-direction:column;padding:20px 12px;gap:4px}
 .sb-lbl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;padding:16px 16px 6px}
 .sb-btn{width:100%;padding:12px 16px;border-radius:10px;border:none;background:transparent;color:var(--text2);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;font-family:'Inter',sans-serif;transition:background 0.12s}
 .sb-btn i{font-size:18px}
@@ -68,13 +56,11 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 .sb-btn.on{background:var(--accent-dim);color:var(--accent)}
 .sb-footer{margin-top:auto;padding-top:16px;border-top:1px solid var(--border)}
 
-/* screens */
 .screens-wrap{flex:1;overflow:hidden;position:relative;background:var(--bg)}
 .screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;display:none;padding-bottom:env(safe-area-inset-bottom,20px)}
 .screen.active{display:block}
 .screen-body{padding:20px;display:flex;flex-direction:column;gap:14px}
 
-/* ── DESKTOP ── */
 @media(min-width:768px){
   html,body{overflow:hidden}
   .hdr-inner{padding:16px 28px}
@@ -82,16 +68,11 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
   .screen-body{padding:32px;max-width:960px}
   .stats-grid{grid-template-columns:repeat(4,1fr)!important}
   .greeting h2{font-size:28px}
-  .greeting{padding-bottom:8px}
-  #s-form-np .screen-body,#s-form-p .screen-body{
-    display:grid;grid-template-columns:1fr 1fr;gap:20px 32px;align-items:start
-  }
-  #s-form-np .alert,#s-form-p .alert,
-  #s-form-np .submit-btn,#s-form-p .submit-btn{grid-column:1/-1}
+  #s-form-np .screen-body,#s-form-p .screen-body{display:grid;grid-template-columns:1fr 1fr;gap:20px 32px;align-items:start}
+  #s-form-np .alert,#s-form-p .alert,#s-form-np .submit-btn,#s-form-p .submit-btn{grid-column:1/-1}
 }
 
-/* ── COMPONENTS ── */
-.greeting h2{font-size:21px;font-weight:600;color:var(--text);display:block!important;visibility:visible!important}
+.greeting h2{font-size:21px;font-weight:600;color:var(--text)}
 .greeting p{font-size:13px;color:var(--text2);margin-top:3px}
 .sec-lbl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -106,6 +87,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 .mbtn-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
 .mbtn-icon.purple{background:var(--accent-light);color:var(--accent)}
 .mbtn-icon.green{background:var(--success-light);color:var(--success)}
+.mbtn-icon.amber{background:var(--warn-light);color:var(--warn)}
 .mbtn-title{font-size:15px;font-weight:500;color:var(--text)}
 .mbtn-sub{font-size:12px;color:var(--text2);margin-top:2px}
 .mbtn-arrow{margin-left:auto;color:var(--text3);font-size:20px;flex-shrink:0}
@@ -129,12 +111,13 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 .bdg.multi{background:var(--accent-dim);color:var(--accent)}
 .rec-detail{display:none;border-top:1px solid var(--border);padding:14px 16px;flex-direction:column;gap:10px}
 .rec-detail.open{display:flex}
-.det-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
-.det-k{color:var(--text2)}.det-v{color:var(--text);font-weight:500}
+.det-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;gap:10px}
+.det-k{color:var(--text2);flex-shrink:0}.det-v{color:var(--text);font-weight:500;text-align:right}
 .guias-box{background:var(--surface2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.9}
-.act-row{display:flex;gap:8px;margin-top:4px}
-.act-btn{flex:1;padding:9px 8px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'Inter',sans-serif}
+.act-row{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.act-btn{flex:1;padding:9px 8px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'Inter',sans-serif;min-width:90px}
 .act-btn.primary{background:var(--accent-light);border-color:rgba(99,102,241,0.25);color:var(--accent)}
+.act-btn.danger{background:var(--danger-light);border-color:rgba(239,68,68,0.25);color:var(--danger)}
 .act-btn a{color:inherit;text-decoration:none;display:flex;align-items:center;gap:5px}
 .sub-opts{display:flex;flex-direction:column;gap:10px}
 .sub-opt{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 16px;display:flex;gap:14px;align-items:flex-start;cursor:pointer;transition:background 0.12s}
@@ -146,7 +129,8 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 .sopt-desc{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5}
 .form-group{display:flex;flex-direction:column;gap:6px}
 .form-lbl{font-size:13px;font-weight:500;color:var(--text2)}
-.form-input{width:100%;padding:11px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s}
+.form-input,textarea.form-input{width:100%;padding:11px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s}
+textarea.form-input{resize:vertical;min-height:70px}
 .form-input:focus{border-color:var(--accent)}
 .form-select{width:100%;padding:11px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%239090a8' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
 .guia-tags{display:flex;flex-wrap:wrap;gap:6px;min-height:4px}
@@ -176,7 +160,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:50px 24px;text-align:center}
 .empty i{font-size:44px;color:var(--text3)}
 .empty p{font-size:14px;color:var(--text2)}
-#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:100;white-space:nowrap}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:100;white-space:nowrap;max-width:90vw;text-align:center}
 #toast.show{opacity:1}
 #edit-modal{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;background:rgba(0,0,0,0.5)}
 #edit-modal.open{display:flex}
@@ -184,55 +168,25 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 .modal-handle{width:40px;height:4px;border-radius:2px;background:var(--border-strong);margin:0 auto 4px}
 .modal-title{font-size:17px;font-weight:600;color:var(--text)}
 
-/* DRAFT/PUBLISH TOGGLE */
-#env-toggle{
-  position:fixed;bottom:24px;right:20px;
-  display:none;
-  align-items:center;gap:8px;
-  background:var(--surface);
-  border:1px solid var(--border-strong);
-  border-radius:20px;
-  padding:8px 14px 8px 10px;
-  cursor:pointer;
-  box-shadow:var(--shadow,0 2px 12px rgba(0,0,0,0.12));
-  z-index:200;
-  font-family:'Inter',sans-serif;
-  font-size:12px;font-weight:500;
-  color:var(--text2);
-  transition:all 0.2s;
-}
-#env-toggle:hover{border-color:var(--accent)}
-#env-toggle .toggle-track{
-  width:32px;height:18px;border-radius:20px;
-  background:var(--text3);
-  position:relative;transition:background 0.2s;flex-shrink:0;
-}
-#env-toggle.publish .toggle-track{background:var(--success)}
-#env-toggle .toggle-thumb{
-  width:12px;height:12px;border-radius:50%;
-  background:#fff;
-  position:absolute;top:3px;left:3px;
-  transition:transform 0.2s;
-}
-#env-toggle.publish .toggle-thumb{transform:translateX(14px)}
-#env-toggle .env-label{color:var(--text2)}
-#env-toggle.publish .env-label{color:var(--success)}
-.draft-banner{
-  display:none;
-  background:var(--warn-light);
-  color:var(--warn);
-  border-bottom:1px solid rgba(245,158,11,0.3);
-  font-size:12px;font-weight:500;
-  padding:6px 18px;
-  align-items:center;gap:8px;
-}
-.draft-banner.show{display:flex}
+/* PERMISOS */
+.role-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px}
+.role-card h3{font-size:15px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.role-card ul{margin:10px 0 0 18px;font-size:13px;color:var(--text2);line-height:1.8}
+.you-badge{background:var(--accent);color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
 
+/* AUDIT */
+.audit-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;flex-direction:column;gap:6px}
+.audit-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.audit-accion{font-size:12px;font-weight:600;padding:2px 9px;border-radius:20px}
+.audit-accion.Agregar{background:var(--success-light);color:var(--success)}
+.audit-accion.Editar{background:var(--accent-light);color:var(--accent)}
+.audit-accion.Eliminar{background:var(--danger-light);color:var(--danger)}
+.audit-meta{font-size:12px;color:var(--text2)}
+.audit-revert-done{font-size:11px;color:var(--text3);font-style:italic}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="view-login">
   <div class="login-wrap">
     <div class="login-logo"><i class="ti ti-building-store"></i></div>
@@ -244,50 +198,38 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
       <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       Continuar con Google
     </button>
-    <p class="login-hint">Solo necesitas autorizar una vez</p>
+    <p class="login-hint">Solo cuentas autorizadas pueden ingresar</p>
   </div>
 </div>
 
-<!-- APP -->
 <div id="view-app">
   <div class="hdr">
     <div class="hdr-inner">
       <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none"><i class="ti ti-arrow-left"></i></button>
       <div style="flex:1"><h1 id="hdrTitle">Tienda Brava</h1><p id="hdrSub">Registro de paquetes</p></div>
+      <button class="refresh-btn" onclick="manualRefresh()" title="Actualizar"><i class="ti ti-refresh"></i></button>
       <span class="mes-badge" id="mesBadge"></span>
     </div>
   </div>
 
-  <!-- DRAFT BANNER -->
-  <div class="draft-banner" id="draftBanner">
-    <i class="ti ti-flask"></i> Modo Draft — los datos se guardan en el Sheet de pruebas
-  </div>
-
-  <!-- ENV TOGGLE (solo admin) -->
-  <button id="env-toggle" onclick="toggleEnv()" title="Cambiar modo">
-    <div class="toggle-track"><div class="toggle-thumb"></div></div>
-    <span class="env-label" id="envLabel">Draft</span>
-  </button>
-
   <div class="app-layout">
-    <!-- SIDEBAR (desktop only) -->
     <div class="sidebar" id="sidebar">
       <span class="sb-lbl">Menú</span>
       <button class="sb-btn on" id="sb0" onclick="sbGo('s-home',0)"><i class="ti ti-home"></i> Inicio</button>
       <button class="sb-btn" id="sb1" onclick="sbGo('s-consultar',1)"><i class="ti ti-list-search"></i> Consultar registros</button>
       <button class="sb-btn" id="sb2" onclick="sbGo('s-add-menu',2)"><i class="ti ti-package"></i> Agregar paquete</button>
+      <button class="sb-btn admin-only" id="sb3" style="display:none" onclick="sbGo('s-permisos',3)"><i class="ti ti-shield-lock"></i> Permisos</button>
+      <button class="sb-btn admin-only" id="sb4" style="display:none" onclick="sbGo('s-audit',4)"><i class="ti ti-history"></i> Auditoría</button>
       <div class="sb-footer">
         <button class="sb-btn" onclick="doLogout()"><i class="ti ti-logout"></i> Cerrar sesión</button>
       </div>
     </div>
 
-    <!-- SCREENS -->
     <div class="screens-wrap">
 
-      <!-- HOME -->
       <div class="screen active" id="s-home">
         <div class="screen-body">
-          <div class="greeting"><h2>Buenos días 👋</h2><p id="fechaHoy"></p></div>
+          <div class="greeting"><h2 id="greetText">Hola 👋</h2><p id="fechaHoy"></p></div>
           <div class="stats-grid">
             <div class="stat-card ca"><div class="stat-num" id="stTotal">—</div><div class="stat-lbl">Total mes (COP)</div></div>
             <div class="stat-card"><div class="stat-num" id="stPaq">—</div><div class="stat-lbl">Paquetes</div></div>
@@ -297,7 +239,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
           <div class="sec-lbl">Acciones</div>
           <button class="main-btn" onclick="goTo('s-consultar')">
             <div class="mbtn-icon purple"><i class="ti ti-list-search"></i></div>
-            <div><div class="mbtn-title">Consultar registros</div><div class="mbtn-sub">Busca y filtra por estado</div></div>
+            <div><div class="mbtn-title">Consultar registros</div><div class="mbtn-sub">Busca, edita o elimina</div></div>
             <i class="ti ti-chevron-right mbtn-arrow"></i>
           </button>
           <button class="main-btn" onclick="goTo('s-add-menu')">
@@ -305,10 +247,19 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
             <div><div class="mbtn-title">Agregar paquete</div><div class="mbtn-sub">Registra uno o varios # de guía</div></div>
             <i class="ti ti-chevron-right mbtn-arrow"></i>
           </button>
+          <button class="main-btn admin-only" style="display:none" onclick="goTo('s-permisos')">
+            <div class="mbtn-icon amber"><i class="ti ti-shield-lock"></i></div>
+            <div><div class="mbtn-title">Permisos</div><div class="mbtn-sub">Roles y capacidades</div></div>
+            <i class="ti ti-chevron-right mbtn-arrow"></i>
+          </button>
+          <button class="main-btn admin-only" style="display:none" onclick="goTo('s-audit')">
+            <div class="mbtn-icon amber"><i class="ti ti-history"></i></div>
+            <div><div class="mbtn-title">Auditoría</div><div class="mbtn-sub">Historial de acciones</div></div>
+            <i class="ti ti-chevron-right mbtn-arrow"></i>
+          </button>
         </div>
       </div>
 
-      <!-- CONSULTAR -->
       <div class="screen" id="s-consultar">
         <div class="screen-body">
           <div class="search-wrap"><i class="ti ti-search"></i><input type="search" placeholder="Buscar por # guía..." id="searchInput" oninput="filterRecs()" autocomplete="off"></div>
@@ -324,7 +275,6 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
         </div>
       </div>
 
-      <!-- ADD MENU -->
       <div class="screen" id="s-add-menu">
         <div class="screen-body">
           <div class="sub-opts">
@@ -340,7 +290,6 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
         </div>
       </div>
 
-      <!-- FORM NP -->
       <div class="screen" id="s-form-np">
         <div class="screen-body">
           <div class="alert warn" id="alertNP"><i class="ti ti-alert-triangle"></i><span id="alertNPMsg"></span></div>
@@ -352,6 +301,10 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
               <button class="add-guia-btn" onclick="addGuia('NP')"><i class="ti ti-plus"></i></button>
             </div>
             <p class="hint">Pago conjunto → agrega múltiples guías.</p>
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">Descripción del paquete</label>
+            <textarea class="form-input" id="descNP" placeholder="Ej: Tenis Nike talla 38, camisetas..."></textarea>
           </div>
           <div class="form-group">
             <label class="form-lbl">Valor (COP)</label>
@@ -374,7 +327,6 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
         </div>
       </div>
 
-      <!-- FORM P -->
       <div class="screen" id="s-form-p">
         <div class="screen-body">
           <div class="alert warn" id="alertP"><i class="ti ti-alert-triangle"></i><span id="alertPMsg"></span></div>
@@ -386,6 +338,10 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
               <button class="add-guia-btn" onclick="addGuia('P')"><i class="ti ti-plus"></i></button>
             </div>
             <p class="hint">Pago conjunto → agrega múltiples guías.</p>
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">Descripción del paquete</label>
+            <textarea class="form-input" id="descP" placeholder="Ej: Tenis Nike talla 38, camisetas..."></textarea>
           </div>
           <div class="form-group">
             <label class="form-lbl">Valor pagado (COP)</label>
@@ -404,9 +360,40 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
         </div>
       </div>
 
-    </div><!-- /screens-wrap -->
-  </div><!-- /app-layout -->
-</div><!-- /view-app -->
+      <div class="screen" id="s-permisos">
+        <div class="screen-body">
+          <div class="role-card">
+            <h3><i class="ti ti-shield-check"></i> Administrador <span id="badgeIfAdmin"></span></h3>
+            <ul>
+              <li>Consultar registros</li>
+              <li>Agregar paquetes</li>
+              <li>Editar cualquier registro</li>
+              <li>Eliminar registros</li>
+              <li>Ver panel de Permisos</li>
+              <li>Ver y revertir Auditoría</li>
+            </ul>
+          </div>
+          <div class="role-card">
+            <h3><i class="ti ti-user"></i> Usuario <span id="badgeIfUser"></span></h3>
+            <ul>
+              <li>Consultar registros</li>
+              <li>Agregar paquetes</li>
+            </ul>
+          </div>
+          <p class="hint">El acceso a la app está restringido a las cuentas de Google autorizadas en el proyecto. El rol se asigna automáticamente según el correo con el que inicias sesión.</p>
+        </div>
+      </div>
+
+      <div class="screen" id="s-audit">
+        <div class="screen-body">
+          <div class="loader show" id="loaderAudit"><div class="spin"></div>Cargando auditoría...</div>
+          <div id="auditList"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <div id="toast"></div>
 
@@ -415,6 +402,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
     <div class="modal-handle"></div>
     <div class="modal-title">Editar registro</div>
     <input type="hidden" id="editIdx">
+    <div class="form-group"><label class="form-lbl">Descripción</label><textarea class="form-input" id="editDesc"></textarea></div>
     <div class="form-group"><label class="form-lbl">Valor (COP)</label><input class="form-input" id="editVal" type="text" inputmode="decimal" oninput="fmtVal(this)"></div>
     <div class="form-group"><label class="form-lbl">Estado de pago</label><select class="form-select" id="editPag"><option value="Pendiente">Pendiente</option><option value="Pagado">Pagado</option></select></div>
     <div class="form-group"><label class="form-lbl">Estado de envío</label><select class="form-select" id="editEnv"><option value="Pendiente">Pendiente</option><option value="Recibido">Recibido</option></select></div>
@@ -423,14 +411,11 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#0f0f1a}
 </div>
 
 <script>
-const SHEET_PUBLISH='1g2rHbUw7wnWyqNwGFWXzYqlpcv4YVpfaZm2OecTYFD0';
-const SHEET_DRAFT='1htZToSgFPnTT8eE41sve75lZeYqDCbOPUpnPcL6jcNY';
+const SHEET_ID='1g2rHbUw7wnWyqNwGFWXzYqlpcv4YVpfaZm2OecTYFD0';
 const DRIVE_FOLDER='1fhZVCY_BxXdBduWmDW2XEZPmXqs4pB4S';
 const CLIENT_ID='316975303093-mn5qq3otcm9g6qo18vvh4e08bsdsevch.apps.googleusercontent.com';
-const SCOPES='https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
+const SCOPES='https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
 const ADMIN_EMAIL='miguelcolorado2007@gmail.com';
-let isDraft=localStorage.getItem('tb_mode')==='draft';
-let SHEET_ID=isDraft?SHEET_DRAFT:SHEET_PUBLISH;
 const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const now=new Date();
 const mesActual=MONTHS[now.getMonth()];
@@ -438,6 +423,8 @@ const anio=now.getFullYear();
 
 let token=null,curScreen='s-home',navHistory=[],curFilter='todos',allRecs=[];
 let guiasNP=[],guiasP=[],photosNP=[],photosP=[];
+let userEmail='',userName='',role='user';
+let auditRows=[];
 
 const TITLES={
   's-home':['Tienda Brava','Registro de paquetes'],
@@ -445,29 +432,19 @@ const TITLES={
   's-add-menu':['Agregar paquete','Selecciona un tipo'],
   's-form-np':['Paquete pendiente','Nuevo registro'],
   's-form-p':['Paquete pagado','Nuevo registro'],
+  's-permisos':['Permisos','Roles y capacidades'],
+  's-audit':['Auditoría','Historial de acciones'],
 };
 
 document.getElementById('mesBadge').textContent=mesActual+' '+anio;
 document.getElementById('fechaHoy').textContent=now.toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'});
 
-/* AUTO LOGIN — redirect token or localStorage */
-(async function(){
-  // 1. Check if coming back from Google OAuth redirect
-  if(handleRedirectToken()){
-    await onLogin();
-    return;
-  }
-  // 2. Check localStorage for saved token
-  const saved=localStorage.getItem('tb_token');
-  if(!saved)return;
-  try{
-    const test=await fetch('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='+saved);
-    const data=await test.json();
-    if(data.error){localStorage.removeItem('tb_token');return;}
-    token=saved;
-    await onLogin();
-  }catch(e){localStorage.removeItem('tb_token');}
-})();
+function greetingWord(){
+  const h=new Date().getHours();
+  if(h>=5&&h<12)return'Buenos días';
+  if(h>=12&&h<19)return'Buenas tardes';
+  return'Buenas noches';
+}
 
 function setHeader(id){
   const t=TITLES[id]||['',''];
@@ -484,6 +461,7 @@ function goTo(id){
   document.getElementById(id).classList.add('active');
   setHeader(id);
   if(id==='s-consultar')loadRecs();
+  if(id==='s-audit')loadAudit();
 }
 
 function goBack(){
@@ -502,12 +480,20 @@ function sbGo(id,idx){
   document.getElementById(id).classList.add('active');
   setHeader(id);
   if(id==='s-consultar')loadRecs();
+  if(id==='s-audit')loadAudit();
+}
+
+function manualRefresh(){
+  loadStats();
+  if(curScreen==='s-consultar')loadRecs();
+  if(curScreen==='s-audit')loadAudit();
+  showToast('Actualizado');
 }
 
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
 
 function doLogout(){
@@ -517,43 +503,55 @@ function doLogout(){
   document.getElementById('view-login').style.display='flex';
 }
 
-/* AUTH */
-function loginGoogle(){
-  const p=new URLSearchParams({
-    client_id:CLIENT_ID,
-    redirect_uri:'https://miguecolorado.github.io/',
-    response_type:'token',
-    scope:SCOPES,
-    prompt:'consent',
-    include_granted_scopes:'true'
-  });
-  window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p;
+function applyRoleUI(){
+  const isAdmin=role==='admin';
+  document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdmin?'':'none');
+  document.getElementById('badgeIfAdmin').textContent=isAdmin?'(Tú)':'';
+  document.getElementById('badgeIfUser').textContent=!isAdmin?'(Tú)':'';
 }
 
-// Handle redirect back with token in URL hash
+/* AUTH */
+function loginGoogle(){
+  const p=new URLSearchParams({client_id:CLIENT_ID,redirect_uri:'https://miguecolorado.github.io/',response_type:'token',scope:SCOPES,prompt:'consent'});
+  window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p;
+}
 function handleRedirectToken(){
   if(!window.location.hash)return false;
   const params=new URLSearchParams(window.location.hash.slice(1));
   const t=params.get('access_token');
   if(!t)return false;
   token=t;
-  // Clean URL without reloading
   window.history.replaceState(null,'','https://miguecolorado.github.io/');
   return true;
 }
 
+(async function(){
+  if(handleRedirectToken()){await onLogin();return;}
+  const saved=localStorage.getItem('tb_token');
+  if(!saved)return;
+  try{
+    const test=await fetch('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='+saved);
+    const data=await test.json();
+    if(data.error){localStorage.removeItem('tb_token');return;}
+    token=saved;
+    await onLogin();
+  }catch(e){localStorage.removeItem('tb_token');}
+})();
+
 async function onLogin(){
-  localStorage.setItem('tb_token', token);
+  localStorage.setItem('tb_token',token);
   document.getElementById('view-login').style.display='none';
   document.getElementById('view-app').classList.add('visible');
   setHeader('s-home');
-  // Fetch user email via tokeninfo (works with any valid token)
   try{
-    const r=await fetch('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='+token);
+    const r=await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+token}});
     const d=await r.json();
-    console.log('Token info:', d);
-    initEnvToggle(d.email||'');
-  }catch(e){console.error('Token info error:',e)}
+    userEmail=d.email||'';
+    userName=d.given_name||(userEmail?userEmail.split('@')[0]:'');
+    role=userEmail.toLowerCase()===ADMIN_EMAIL.toLowerCase()?'admin':'user';
+  }catch(e){console.error(e)}
+  document.getElementById('greetText').textContent=greetingWord()+(userName?', '+userName:'')+' 👋';
+  applyRoleUI();
   loadStats();
 }
 
@@ -572,60 +570,123 @@ async function shUpdate(range,values){
     {method:'PUT',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({values})});
   return r.json();
 }
+async function getSheetsMeta(){
+  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?fields=sheets.properties`,{headers:{Authorization:'Bearer '+token}});
+  return r.json();
+}
 async function ensureSheet(name){
-  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`,{headers:{Authorization:'Bearer '+token}});
-  const d=await r.json();
+  const d=await getSheetsMeta();
   if(d.sheets&&d.sheets.some(s=>s.properties.title===name))return;
   await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,
     {method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
      body:JSON.stringify({requests:[{addSheet:{properties:{title:name}}}]})});
-  await shAppend(name+'!A1',[['# Guía(s)','Valor (COP)','Estado de pago','Estado de envío','Fotos Drive','Fecha registro']]);
+  await shAppend(name+'!A1',[['# Guía(s)','Valor (COP)','Estado de pago','Estado de envío','Fotos Drive','Fecha registro','Descripción']]);
+}
+async function ensureAuditSheet(){
+  const d=await getSheetsMeta();
+  if(d.sheets&&d.sheets.some(s=>s.properties.title==='AuditLog'))return;
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,
+    {method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+     body:JSON.stringify({requests:[{addSheet:{properties:{title:'AuditLog'}}}]})});
+  await shAppend('AuditLog!A1',[['Fecha y hora','Usuario','Tipo de acción','Hoja','# Guía','Datos anteriores','Datos nuevos','Revertido']]);
+}
+async function getSheetGid(name){
+  const d=await getSheetsMeta();
+  const sh=d.sheets&&d.sheets.find(s=>s.properties.title===name);
+  return sh?sh.properties.sheetId:null;
+}
+async function deleteSheetRow(sheetName,zeroBasedIndex){
+  const gid=await getSheetGid(sheetName);
+  if(gid===null)return;
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,{
+    method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+    body:JSON.stringify({requests:[{deleteDimension:{range:{sheetId:gid,dimension:'ROWS',startIndex:zeroBasedIndex,endIndex:zeroBasedIndex+1}}}]})
+  });
+}
+async function findRowByGuiaKey(sheetName,guiaKey){
+  const d=await shGet(sheetName+'!A2:A2000');
+  const rows=d.values||[];
+  return rows.findIndex(r=>(r[0]||'').trim()===String(guiaKey).trim());
 }
 
-/* ENV TOGGLE */
-let userEmail='';
-
-function initEnvToggle(email){
-  userEmail=email;
-  console.log('User email:', email, '| Admin:', ADMIN_EMAIL);
-  if(email.toLowerCase().trim()!==ADMIN_EMAIL.toLowerCase().trim())return;
-  const btn=document.getElementById('env-toggle');
-  btn.style.display='flex';
-  applyEnv();
+/* AUDIT LOG */
+async function logAction(accion,hoja,guiaKey,prevArr,newArr){
+  try{
+    await ensureAuditSheet();
+    const fecha=new Date().toLocaleString('es-CO');
+    await shAppend('AuditLog!A2',[[fecha,userEmail,accion,hoja,guiaKey,prevArr?JSON.stringify(prevArr):'',newArr?JSON.stringify(newArr):'','No']]);
+  }catch(e){console.error('Error en log de auditoría',e)}
 }
 
-function applyEnv(){
-  isDraft=localStorage.getItem('tb_mode')==='draft';
-  SHEET_ID=isDraft?SHEET_DRAFT:SHEET_PUBLISH;
-  const btn=document.getElementById('env-toggle');
-  const label=document.getElementById('envLabel');
-  const banner=document.getElementById('draftBanner');
-  if(isDraft){
-    btn.classList.remove('publish');
-    label.textContent='Draft';
-    banner.classList.add('show');
-  }else{
-    btn.classList.add('publish');
-    label.textContent='Publish';
-    banner.classList.remove('show');
+async function loadAudit(){
+  const loader=document.getElementById('loaderAudit');
+  const list=document.getElementById('auditList');
+  loader.classList.add('show');list.innerHTML='';
+  try{
+    await ensureAuditSheet();
+    const d=await shGet('AuditLog!A2:H1000');
+    auditRows=(d.values||[]).reverse();
+    loader.classList.remove('show');
+    renderAudit();
+  }catch(e){
+    loader.classList.remove('show');
+    list.innerHTML='<p style="font-size:13px;color:var(--text2);text-align:center;padding:20px">Error cargando auditoría</p>';
   }
 }
 
-function toggleEnv(){
-  isDraft=!isDraft;
-  localStorage.setItem('tb_mode',isDraft?'draft':'publish');
-  SHEET_ID=isDraft?SHEET_DRAFT:SHEET_PUBLISH;
-  applyEnv();
-  // Reload stats with new sheet
-  loadStats();
-  if(document.getElementById('s-consultar').classList.contains('active'))loadRecs();
+function renderAudit(){
+  const list=document.getElementById('auditList');
+  if(!auditRows.length){list.innerHTML='<div class="empty"><i class="ti ti-history"></i><p>Sin acciones registradas aún</p></div>';return}
+  list.innerHTML=auditRows.map((r,i)=>{
+    const[fecha,usuario,accion,hoja,guia,prevJ,newJ,revertido]=r;
+    const revBtn=revertido==='Sí'
+      ?'<span class="audit-revert-done">Ya revertido</span>'
+      :`<button class="act-btn primary" onclick="revertAudit(${i})"><i class="ti ti-arrow-back-up"></i> Revertir</button>`;
+    return`<div class="audit-card">
+      <div class="audit-top">
+        <span class="audit-accion ${accion}">${accion}</span>
+        <span class="audit-meta">${fecha}</span>
+      </div>
+      <div class="audit-meta">Guía: <b>${guia||'—'}</b> · Hoja: ${hoja} · Por: ${usuario}</div>
+      <div class="act-row">${revBtn}</div>
+    </div>`;
+  }).join('');
+}
+
+async function revertAudit(displayIdx){
+  const row=auditRows[displayIdx];
+  const[fecha,usuario,accion,hoja,guia,prevJ,newJ,revertido]=row;
+  if(revertido==='Sí'){showToast('Ya fue revertido');return}
+  try{
+    if(accion==='Agregar'){
+      const rIdx=await findRowByGuiaKey(hoja,guia);
+      if(rIdx>-1)await deleteSheetRow(hoja,rIdx+1);
+    }else if(accion==='Eliminar'){
+      const prev=JSON.parse(prevJ);
+      await shAppend(hoja+'!A2',[prev]);
+    }else if(accion==='Editar'){
+      const prev=JSON.parse(prevJ);
+      const rIdx=await findRowByGuiaKey(hoja,guia);
+      if(rIdx>-1){
+        const sheetRow=rIdx+2;
+        await shUpdate(`${hoja}!B${sheetRow}:D${sheetRow}`,[[prev[1],prev[2],prev[3]]]);
+        await shUpdate(`${hoja}!G${sheetRow}:G${sheetRow}`,[[prev[6]||'']]);
+      }
+    }
+    // mark reverted — find actual row in sheet (auditRows was reversed for display)
+    const realIdx=auditRows.length-1-displayIdx;
+    await shUpdate(`AuditLog!H${realIdx+2}`,[['Sí']]);
+    showToast('Acción revertida correctamente');
+    loadAudit();loadStats();
+    if(curScreen==='s-consultar')loadRecs();
+  }catch(e){console.error(e);showToast('Error al revertir la acción')}
 }
 
 /* STATS */
 async function loadStats(){
   try{
     await ensureSheet(mesActual);
-    const d=await shGet(mesActual+'!A2:F1000');
+    const d=await shGet(mesActual+'!A2:G1000');
     const rows=d.values||[];
     const total=rows.reduce((s,r)=>s+(parseFloat((r[1]||'0').replace(/\./g,'').replace(',','.'))||0),0);
     const pp=rows.filter(r=>r[2]==='Pendiente').length;
@@ -645,7 +706,7 @@ async function loadRecs(){
   loader.classList.add('show');list.innerHTML='';
   try{
     await ensureSheet(mesActual);
-    const d=await shGet(mesActual+'!A2:F1000');
+    const d=await shGet(mesActual+'!A2:G1000');
     allRecs=d.values||[];
     loader.classList.remove('show');
     renderRecs();
@@ -664,8 +725,9 @@ function renderRecs(){
   if(curFilter==='pp')rows=rows.filter(r=>r[2]==='Pendiente');
   if(curFilter==='recibido')rows=rows.filter(r=>r[3]==='Recibido');
   if(curFilter==='pe')rows=rows.filter(r=>r[3]==='Pendiente');
-  if(!rows.length){list.innerHTML='<div class="empty"><i class="ti ti-inbox"></i><p>Sin registros con este filtro</p></div>';return;}
-  list.innerHTML=rows.map((r,i)=>{
+  if(!rows.length){list.innerHTML='<div class="empty"><i class="ti ti-inbox"></i><p>Sin registros con este filtro</p></div>';return}
+  const isAdmin=role==='admin';
+  list.innerHTML=rows.map((r)=>{
     const guias=(r[0]||'').split(',').map(g=>g.trim()).filter(Boolean);
     const multi=guias.length>1;
     const val=r[1]?'$'+(parseFloat(r[1])||0).toLocaleString('es-CO'):'$0';
@@ -673,10 +735,13 @@ function renderRecs(){
     const bEnv=r[3]==='Recibido'?'<span class="bdg recibido">Recibido</span>':'<span class="bdg pe">Pend. envío</span>';
     const bMulti=multi?`<span class="bdg multi">${guias.length} guías</span>`:'';
     const rawUrl=(r[4]||'').trim();
-    const driveUrl=rawUrl.startsWith('http')?rawUrl:'https://drive.google.com/drive/folders/'+rawUrl;
-    const driveBtn=rawUrl?`<div class="act-btn"><a href="${driveUrl}" target="_blank" rel="noopener"><i class="ti ti-photo"></i> Ver fotos</a></div>`:'';
+    const driveUrl=rawUrl.startsWith('http')?rawUrl:(rawUrl?'https://drive.google.com/drive/folders/'+rawUrl:'');
+    const driveBtn=driveUrl?`<div class="act-btn"><a href="${driveUrl}" target="_blank" rel="noopener"><i class="ti ti-photo"></i> Fotos</a></div>`:'';
     const guiasBox=multi?`<div class="guias-box"><b>Guías:</b> ${guias.join(', ')}</div>`:'';
+    const descRow=r[6]?`<div class="det-row"><span class="det-k">Descripción</span><span class="det-v">${r[6]}</span></div>`:'';
     const realIdx=allRecs.indexOf(r);
+    const editBtn=isAdmin?`<button class="act-btn primary" onclick="openEdit(${realIdx})"><i class="ti ti-edit"></i> Editar</button>`:'';
+    const delBtn=isAdmin?`<button class="act-btn danger" onclick="confirmDelete(${realIdx})"><i class="ti ti-trash"></i> Eliminar</button>`:'';
     return`<div class="rec-card">
       <div class="rec-top" onclick="toggleRec(this)">
         <div style="flex:1"><div class="rec-guia">${multi?guias[0]+' +'+(guias.length-1)+' más':(r[0]||'Sin guía')}</div><div class="rec-badges">${bPago}${bEnv}${bMulti}</div></div>
@@ -684,10 +749,11 @@ function renderRecs(){
       </div>
       <div class="rec-detail">
         ${guiasBox}
+        ${descRow}
         <div class="det-row"><span class="det-k">Fecha</span><span class="det-v">${r[5]||'—'}</span></div>
         <div class="det-row"><span class="det-k">Pago</span><span class="det-v">${r[2]||'—'}</span></div>
         <div class="det-row"><span class="det-k">Envío</span><span class="det-v">${r[3]||'—'}</span></div>
-        <div class="act-row">${driveBtn}<button class="act-btn primary" onclick="openEdit(${realIdx})"><i class="ti ti-edit"></i> Editar</button></div>
+        <div class="act-row">${driveBtn}${editBtn}${delBtn}</div>
       </div>
     </div>`;
   }).join('');
@@ -712,15 +778,10 @@ function renderGuias(t){
   const arr=t==='NP'?guiasNP:guiasP;
   const container=document.getElementById('tags'+t);
   container.innerHTML='';
-  arr.forEach((g,i)=>{
-    const span=document.createElement('span');
-    span.className='guia-tag';
-    span.textContent=g+' ';
-    const btn=document.createElement('button');
-    btn.textContent='×';
-    btn.onclick=()=>removeGuia(t,g);
-    span.appendChild(btn);
-    container.appendChild(span);
+  arr.forEach(g=>{
+    const span=document.createElement('span');span.className='guia-tag';span.textContent=g+' ';
+    const btn=document.createElement('button');btn.textContent='×';btn.onclick=()=>removeGuia(t,g);
+    span.appendChild(btn);container.appendChild(span);
   });
 }
 
@@ -754,16 +815,25 @@ function addPhoto(t){
 }
 
 /* DRIVE */
+async function driveGetOrCreate(name,parentId){
+  const q=encodeURIComponent(`name='${name}' and '${parentId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`);
+  const r=await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`,{headers:{Authorization:'Bearer '+token}});
+  const d=await r.json();
+  if(d.files&&d.files.length>0)return d.files[0].id;
+  const cr=await fetch('https://www.googleapis.com/drive/v3/files',{
+    method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+    body:JSON.stringify({name,mimeType:'application/vnd.google-apps.folder',parents:[parentId]})
+  });
+  const cd=await cr.json();
+  return cd.id;
+}
 async function uploadPhotos(files,folderName){
   if(!files.length)return'';
-  const fr=await fetch('https://www.googleapis.com/drive/v3/files',{
-    method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
-    body:JSON.stringify({name:folderName,mimeType:'application/vnd.google-apps.folder',parents:[DRIVE_FOLDER]})
-  });
-  const fd=await fr.json();
-  const folderId=fd.id;
+  let parentId=await driveGetOrCreate(String(anio),DRIVE_FOLDER);
+  parentId=await driveGetOrCreate(mesActual,parentId);
+  const pkgId=await driveGetOrCreate(folderName,parentId);
   for(const file of files){
-    const meta=JSON.stringify({name:file.name,parents:[folderId]});
+    const meta=JSON.stringify({name:file.name,parents:[pkgId]});
     const form=new FormData();
     form.append('metadata',new Blob([meta],{type:'application/json'}));
     form.append('file',file);
@@ -774,7 +844,7 @@ async function uploadPhotos(files,folderName){
       body:JSON.stringify({role:'reader',type:'anyone'})
     });
   }
-  return`https://drive.google.com/drive/folders/${folderId}`;
+  return`https://drive.google.com/drive/folders/${pkgId}`;
 }
 
 /* SUBMIT */
@@ -788,6 +858,7 @@ async function submitForm(t){
   const val=parseVal(document.getElementById('val'+t).value);
   const pag=t==='NP'?document.getElementById('pagNP').value:'Pagado';
   const env=document.getElementById('env'+t).value;
+  const desc=document.getElementById('desc'+t).value||'';
   const photos=t==='NP'?photosNP:photosP;
   btn.disabled=true;btn.innerHTML='<div class="spin" style="border-color:rgba(255,255,255,0.3);border-top-color:#fff"></div> Guardando...';
   try{
@@ -799,24 +870,30 @@ async function submitForm(t){
     const folderName=guias[0]+'_'+new Date().toISOString().slice(0,10);
     const driveUrl=await uploadPhotos(photos,folderName);
     const fecha=now.toLocaleDateString('es-CO');
-    await shAppend(mesActual+'!A2',[[guias.join(', '),val,pag,env,driveUrl,fecha]]);
+    const guiaKey=guias.join(', ');
+    const newRow=[guiaKey,val,pag,env,driveUrl,fecha,desc];
+    await shAppend(mesActual+'!A2',[newRow]);
+    logAction('Agregar',mesActual,guiaKey,null,newRow);
     if(t==='NP'){guiasNP=[];photosNP=[];}else{guiasP=[];photosP=[];}
     renderGuias(t);
     document.getElementById('photos'+t).innerHTML=`<div class="photo-thumb" onclick="addPhoto('${t}')"><i class="ti ti-camera-plus"></i></div>`;
     document.getElementById('val'+t).value='';
+    document.getElementById('desc'+t).value='';
     alertMsg.textContent='¡Registro guardado en Sheets!';alertEl.className='alert success show';
     loadStats();setTimeout(()=>{alertEl.className='alert'},3000);
   }catch(e){alertMsg.textContent='Error al guardar. Verifica permisos y conexión.';alertEl.className='alert err show';console.error(e)}
   btn.disabled=false;btn.innerHTML='<i class="ti ti-cloud-upload"></i> Guardar en Sheets';
 }
 
-/* EDIT */
+/* EDIT (admin only) */
 function openEdit(idx){
+  if(role!=='admin'){showToast('No tienes permiso para editar');return}
   const r=allRecs[idx];if(!r)return;
   document.getElementById('editIdx').value=idx;
   document.getElementById('editVal').value=r[1]||'';
   document.getElementById('editPag').value=r[2]||'Pendiente';
   document.getElementById('editEnv').value=r[3]||'Pendiente';
+  document.getElementById('editDesc').value=r[6]||'';
   document.getElementById('edit-modal').classList.add('open');
 }
 function closeModal(e){if(e.target===document.getElementById('edit-modal'))document.getElementById('edit-modal').classList.remove('open')}
@@ -825,13 +902,39 @@ async function saveEdit(){
   const val=parseVal(document.getElementById('editVal').value);
   const pag=document.getElementById('editPag').value;
   const env=document.getElementById('editEnv').value;
+  const desc=document.getElementById('editDesc').value||'';
+  const prevData=[...allRecs[idx]];
+  const guiaKey=allRecs[idx][0]||'';
+  const sheetRow=idx+2;
   try{
-    await shUpdate(`${mesActual}!B${idx+2}:D${idx+2}`,[[val,pag,env]]);
-    allRecs[idx][1]=val;allRecs[idx][2]=pag;allRecs[idx][3]=env;
+    await shUpdate(`${mesActual}!B${sheetRow}:D${sheetRow}`,[[val,pag,env]]);
+    await shUpdate(`${mesActual}!G${sheetRow}:G${sheetRow}`,[[desc]]);
+    allRecs[idx][1]=val;allRecs[idx][2]=pag;allRecs[idx][3]=env;allRecs[idx][6]=desc;
+    const newData=[...allRecs[idx]];
+    logAction('Editar',mesActual,guiaKey,prevData,newData);
     document.getElementById('edit-modal').classList.remove('open');
-    const guiaNum=allRecs[idx][0]||'';
-    renderRecs();loadStats();showToast('¡La guía '+guiaNum+' fue actualizada exitosamente!');
+    renderRecs();loadStats();
+    showToast('¡La guía '+guiaKey+' fue actualizada exitosamente!');
   }catch(e){showToast('Error al actualizar');console.error(e)}
+}
+
+/* DELETE (admin only) */
+function confirmDelete(idx){
+  if(role!=='admin'){showToast('No tienes permiso para eliminar');return}
+  const r=allRecs[idx];if(!r)return;
+  const ok=confirm(`¿Eliminar el registro de la guía ${r[0]}? Esta acción puede revertirse desde Auditoría.`);
+  if(ok)doDelete(idx);
+}
+async function doDelete(idx){
+  const r=allRecs[idx];
+  const guiaKey=r[0]||'';
+  try{
+    await deleteSheetRow(mesActual,idx+1);
+    logAction('Eliminar',mesActual,guiaKey,r,null);
+    allRecs.splice(idx,1);
+    renderRecs();loadStats();
+    showToast('Registro de guía '+guiaKey+' eliminado');
+  }catch(e){showToast('Error al eliminar');console.error(e)}
 }
 </script>
 </body>
