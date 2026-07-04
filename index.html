@@ -556,39 +556,69 @@ async function onLogin(){
 }
 
 /* SHEETS */
+function handleApiError(data){
+  if(data&&data.error&&(data.error.code===401||data.error.status==='UNAUTHENTICATED')){
+    localStorage.removeItem('tb_token');
+    token=null;
+    document.getElementById('view-app').classList.remove('visible');
+    document.getElementById('view-login').style.display='flex';
+    showToast('Tu sesión expiró. Inicia sesión de nuevo.');
+    throw new Error('AUTH_EXPIRED');
+  }
+  return data;
+}
+
 async function shGet(range){
   const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}`,{headers:{Authorization:'Bearer '+token}});
-  return r.json();
+  const d=await r.json();
+  return handleApiError(d);
 }
 async function shAppend(range,values,inputOption){
   const opt=inputOption||'RAW';
   const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=${opt}&insertDataOption=INSERT_ROWS`,
     {method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({values})});
-  return r.json();
+  const d=await r.json();
+  return handleApiError(d);
 }
 async function shUpdate(range,values){
   const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,
     {method:'PUT',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({values})});
-  return r.json();
+  const d=await r.json();
+  return handleApiError(d);
 }
 async function getSheetsMeta(){
   const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?fields=sheets.properties`,{headers:{Authorization:'Bearer '+token}});
-  return r.json();
+  const d=await r.json();
+  return handleApiError(d);
 }
 async function ensureSheet(name){
   const d=await getSheetsMeta();
-  if(d.sheets&&d.sheets.some(s=>s.properties.title===name))return;
-  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,
+  if(!d||!Array.isArray(d.sheets)){
+    throw new Error('No se pudo verificar las hojas del Sheet. Intenta de nuevo.');
+  }
+  if(d.sheets.some(s=>s.properties.title===name))return;
+  const cr=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,
     {method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
      body:JSON.stringify({requests:[{addSheet:{properties:{title:name}}}]})});
+  const crData=await cr.json();
+  if(!crData||!crData.replies){
+    throw new Error('No se pudo crear la hoja '+name);
+  }
   await shAppend(name+'!A1',[['# Guía(s)','Valor (COP)','Estado de pago','Estado de envío','Fotos Drive','Fecha registro','Descripción']]);
 }
 async function ensureAuditSheet(){
   const d=await getSheetsMeta();
-  if(d.sheets&&d.sheets.some(s=>s.properties.title==='AuditLog'))return;
-  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,
+  if(!d||!Array.isArray(d.sheets)){
+    throw new Error('No se pudo verificar las hojas del Sheet. Intenta de nuevo.');
+  }
+  if(d.sheets.some(s=>s.properties.title==='AuditLog'))return;
+  const cr=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,
     {method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
      body:JSON.stringify({requests:[{addSheet:{properties:{title:'AuditLog'}}}]})});
+  const crData=await cr.json();
+  if(!crData||!crData.replies){
+    throw new Error('No se pudo crear la hoja AuditLog');
+  }
   await shAppend('AuditLog!A1',[['Fecha y hora','Usuario','Tipo de acción','Hoja','# Guía','Datos anteriores','Datos nuevos','Revertido']]);
 }
 async function getSheetGid(name){
