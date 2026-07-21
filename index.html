@@ -169,9 +169,18 @@ textarea.form-input{resize:vertical;min-height:70px}
 .modal-title{font-size:17px;font-weight:600;color:var(--text)}
 
 /* PERMISOS */
-.role-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px}
-.role-card h3{font-size:15px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
-.role-card ul{margin:10px 0 0 18px;font-size:13px;color:var(--text2);line-height:1.8}
+.user-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.user-info{flex:1;min-width:180px}
+.user-email{font-size:14px;font-weight:500;color:var(--text);word-break:break-all}
+.user-meta{font-size:12px;color:var(--text3);margin-top:3px}
+.you-tag{background:var(--accent);color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;margin-left:6px;vertical-align:middle}
+.role-switch{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0}
+.role-switch-lbl{font-size:12px;font-weight:600;color:var(--text3);width:56px;text-align:center}
+.role-switch-lbl.on{color:var(--accent)}
+.role-switch-track{width:44px;height:24px;border-radius:20px;background:var(--text3);position:relative;transition:background 0.2s;flex-shrink:0}
+.role-switch-track.admin{background:var(--accent)}
+.role-switch-thumb{width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.role-switch-track.admin .role-switch-thumb{transform:translateX(20px)}
 .you-badge{background:var(--accent);color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
 
 /* AUDIT */
@@ -362,25 +371,9 @@ textarea.form-input{resize:vertical;min-height:70px}
 
       <div class="screen" id="s-permisos">
         <div class="screen-body">
-          <div class="role-card">
-            <h3><i class="ti ti-shield-check"></i> Administrador <span id="badgeIfAdmin"></span></h3>
-            <ul>
-              <li>Consultar registros</li>
-              <li>Agregar paquetes</li>
-              <li>Editar cualquier registro</li>
-              <li>Eliminar registros</li>
-              <li>Ver panel de Permisos</li>
-              <li>Ver y revertir Auditoría</li>
-            </ul>
-          </div>
-          <div class="role-card">
-            <h3><i class="ti ti-user"></i> Usuario <span id="badgeIfUser"></span></h3>
-            <ul>
-              <li>Consultar registros</li>
-              <li>Agregar paquetes</li>
-            </ul>
-          </div>
-          <p class="hint">El acceso a la app está restringido a las cuentas de Google autorizadas en el proyecto. El rol se asigna automáticamente según el correo con el que inicias sesión.</p>
+          <p class="hint">Cada persona que inicia sesión queda registrada aquí automáticamente. Usa el switch para cambiar su rol. El acceso a la app en sí sigue restringido a las cuentas autorizadas en Google Cloud.</p>
+          <div class="loader show" id="loaderUsers"><div class="spin"></div>Cargando usuarios...</div>
+          <div id="usersList"></div>
         </div>
       </div>
 
@@ -462,6 +455,7 @@ function goTo(id){
   setHeader(id);
   if(id==='s-consultar')loadRecs();
   if(id==='s-audit')loadAudit();
+  if(id==='s-permisos')loadUsers();
 }
 
 function goBack(){
@@ -481,12 +475,14 @@ function sbGo(id,idx){
   setHeader(id);
   if(id==='s-consultar')loadRecs();
   if(id==='s-audit')loadAudit();
+  if(id==='s-permisos')loadUsers();
 }
 
 function manualRefresh(){
   loadStats();
   if(curScreen==='s-consultar')loadRecs();
   if(curScreen==='s-audit')loadAudit();
+  if(curScreen==='s-permisos')loadUsers();
   showToast('Actualizado');
 }
 
@@ -506,8 +502,6 @@ function doLogout(){
 function applyRoleUI(){
   const isAdmin=role==='admin';
   document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdmin?'':'none');
-  document.getElementById('badgeIfAdmin').textContent=isAdmin?'(Tú)':'';
-  document.getElementById('badgeIfUser').textContent=!isAdmin?'(Tú)':'';
 }
 
 /* AUTH */
@@ -548,8 +542,8 @@ async function onLogin(){
     const d=await r.json();
     userEmail=d.email||'';
     userName=d.given_name||(userEmail?userEmail.split('@')[0]:'');
-    role=userEmail.toLowerCase()===ADMIN_EMAIL.toLowerCase()?'admin':'user';
-  }catch(e){console.error(e)}
+    await resolveRoleAndTrackLogin();
+  }catch(e){console.error(e);role=userEmail.toLowerCase()===ADMIN_EMAIL.toLowerCase()?'admin':'user';}
   document.getElementById('greetText').textContent=greetingWord()+(userName?', '+userName:'')+' 👋';
   applyRoleUI();
   loadStats();
@@ -557,13 +551,16 @@ async function onLogin(){
 
 /* SHEETS */
 function handleApiError(data){
-  if(data&&data.error&&(data.error.code===401||data.error.status==='UNAUTHENTICATED')){
-    localStorage.removeItem('tb_token');
-    token=null;
-    document.getElementById('view-app').classList.remove('visible');
-    document.getElementById('view-login').style.display='flex';
-    showToast('Tu sesión expiró. Inicia sesión de nuevo.');
-    throw new Error('AUTH_EXPIRED');
+  if(data&&data.error){
+    if(data.error.code===401||data.error.status==='UNAUTHENTICATED'){
+      localStorage.removeItem('tb_token');
+      token=null;
+      document.getElementById('view-app').classList.remove('visible');
+      document.getElementById('view-login').style.display='flex';
+      showToast('Tu sesión expiró. Inicia sesión de nuevo.');
+      throw new Error('AUTH_EXPIRED');
+    }
+    throw new Error(data.error.message||('Error de la API (código '+(data.error.code||'?')+')'));
   }
   return data;
 }
@@ -621,6 +618,103 @@ async function ensureAuditSheet(){
   }
   await shAppend('AuditLog!A1',[['Fecha y hora','Usuario','Tipo de acción','Hoja','# Guía','Datos anteriores','Datos nuevos','Revertido']]);
 }
+
+/* USUARIOS Y ROLES */
+async function ensureUsersSheet(){
+  const d=await getSheetsMeta();
+  if(!d||!Array.isArray(d.sheets)){
+    throw new Error('No se pudo verificar las hojas del Sheet. Intenta de nuevo.');
+  }
+  if(d.sheets.some(s=>s.properties.title==='Usuarios'))return;
+  const cr=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,
+    {method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+     body:JSON.stringify({requests:[{addSheet:{properties:{title:'Usuarios'}}}]})});
+  const crData=await cr.json();
+  if(!crData||!crData.replies){
+    throw new Error('No se pudo crear la hoja Usuarios');
+  }
+  await shAppend('Usuarios!A1',[['Correo','Rol','Última conexión']]);
+}
+
+function nowStamp(){
+  const _d=new Date();
+  return _d.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+_d.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+}
+
+async function resolveRoleAndTrackLogin(){
+  await ensureUsersSheet();
+  const d=await shGet('Usuarios!A2:C1000');
+  const rows=d.values||[];
+  const idx=rows.findIndex(r=>(r[0]||'').trim().toLowerCase()===userEmail.trim().toLowerCase());
+  const stamp=nowStamp();
+  if(idx>-1){
+    role=(rows[idx][1]||'').toLowerCase()==='admin'?'admin':'user';
+    await shUpdate(`Usuarios!C${idx+2}:C${idx+2}`,[[stamp]]);
+  }else{
+    role=userEmail.toLowerCase()===ADMIN_EMAIL.toLowerCase()?'admin':'user';
+    await shAppend('Usuarios!A2',[[userEmail,role==='admin'?'Admin':'Usuario',stamp]]);
+  }
+}
+
+let usersRows=[];
+async function loadUsers(){
+  const loader=document.getElementById('loaderUsers');
+  const list=document.getElementById('usersList');
+  loader.classList.add('show');list.innerHTML='';
+  try{
+    await ensureUsersSheet();
+    const d=await shGet('Usuarios!A2:C1000');
+    usersRows=d.values||[];
+    loader.classList.remove('show');
+    renderUsers();
+  }catch(e){
+    loader.classList.remove('show');
+    list.innerHTML='<p style="font-size:13px;color:var(--text2);text-align:center;padding:20px">Error cargando usuarios</p>';
+    console.error(e);
+  }
+}
+
+function renderUsers(){
+  const list=document.getElementById('usersList');
+  if(!usersRows.length){list.innerHTML='<div class="empty"><i class="ti ti-users"></i><p>Aún no hay usuarios registrados</p></div>';return}
+  list.innerHTML=usersRows.map((r,i)=>{
+    const email=r[0]||'';
+    const isAdminRow=(r[1]||'').toLowerCase()==='admin';
+    const conexion=r[2]||'—';
+    const isYou=email.trim().toLowerCase()===userEmail.trim().toLowerCase();
+    return`<div class="user-card">
+      <div class="user-info">
+        <div class="user-email">${email}${isYou?'<span class="you-tag">Tú</span>':''}</div>
+        <div class="user-meta">Última conexión: ${conexion}</div>
+      </div>
+      <div class="role-switch" onclick="toggleUserRole(${i})">
+        <span class="role-switch-lbl ${!isAdminRow?'on':''}">Usuario</span>
+        <div class="role-switch-track ${isAdminRow?'admin':''}"><div class="role-switch-thumb"></div></div>
+        <span class="role-switch-lbl ${isAdminRow?'on':''}">Admin</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function toggleUserRole(idx){
+  const r=usersRows[idx];
+  const email=r[0]||'';
+  const isAdminRow=(r[1]||'').toLowerCase()==='admin';
+  const newRole=isAdminRow?'Usuario':'Admin';
+  const isYou=email.trim().toLowerCase()===userEmail.trim().toLowerCase();
+  const msg=isYou
+    ?`Vas a cambiar TU PROPIO rol a "${newRole}". Si te quitas Admin perderás acceso a este panel. ¿Continuar?`
+    :`¿Cambiar el rol de ${email} a "${newRole}"?`;
+  if(!confirm(msg))return;
+  try{
+    await shUpdate(`Usuarios!B${idx+2}:B${idx+2}`,[[newRole]]);
+    usersRows[idx][1]=newRole;
+    if(isYou){role=newRole.toLowerCase();applyRoleUI();}
+    renderUsers();
+    showToast('Rol actualizado');
+  }catch(e){showToast('Error al actualizar el rol');console.error(e)}
+}
+
 async function getSheetGid(name){
   const d=await getSheetsMeta();
   const sh=d.sheets&&d.sheets.find(s=>s.properties.title===name);
@@ -656,7 +750,10 @@ async function logActionSafe(accion,hoja,guiaKey,prevArr,newArr){
     try{
       await new Promise(res=>setTimeout(res,900));
       await logAction(accion,hoja,guiaKey,prevArr,newArr);
-    }catch(e2){console.error('Falló el log de auditoría tras reintento',e2)}
+    }catch(e2){
+      console.error('Falló el log de auditoría tras reintento',e2);
+      showToast('El registro se guardó, pero no se pudo escribir en Auditoría (revisa permisos de esa hoja).');
+    }
   }
 }
 
